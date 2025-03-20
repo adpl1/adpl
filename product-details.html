@@ -19,7 +19,14 @@
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+    /* حاوية المرونة للمعرض والتفاصيل جنبًا إلى جنب */
+    .product-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
     .slider-container {
+      flex: 1 1 300px;
       position: relative;
       overflow: hidden;
       border-radius: 10px;
@@ -33,9 +40,29 @@
       object-fit: cover;
     }
     .details {
-      margin-top: 20px;
+      flex: 1 1 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .order-btn {
+    .details p {
+      margin: 10px 0;
+    }
+    .details .product-name {
+      font-weight: bold;
+      font-size: 24px;
+    }
+    .details .price {
+      color: #ff6666;
+      font-size: 22px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .order-btn, .buy-btn, .back-btn {
       background: green;
       color: #fff;
       border: none;
@@ -43,8 +70,13 @@
       cursor: pointer;
       border-radius: 5px;
       transition: background 0.3s ease;
+      font-size: 16px;
     }
-    .order-btn:hover { background: #006400; }
+    .order-btn:hover, .buy-btn:hover { background: #006400; }
+    .back-btn {
+      background: #007bff;
+    }
+    .back-btn:hover { background: #0056b3; }
   </style>
 </head>
 <body>
@@ -55,7 +87,7 @@
   <script>
     // جلب بيانات المنتج من التخزين المحلي
     let product = JSON.parse(localStorage.getItem("selectedProduct"));
-    // مجموعة صور للمعرض (يمكنك تعديلها لاحقاً)
+    // مجموعة صور للمعرض (يمكن تعديلها لاحقاً)
     let slideImages = [
       product.img, 
       "https://via.placeholder.com/800x400/ff7f7f/333333?text=الصورة+2",
@@ -76,16 +108,12 @@
     let startX = 0;
     let isDragging = false;
     const slider = document.getElementById("slider");
-    
     function touchStart(e) {
       isDragging = true;
       startX = e.touches[0].clientX;
     }
     function touchMove(e) {
       if(!isDragging) return;
-      let currentX = e.touches[0].clientX;
-      let diff = startX - currentX;
-      // لا نقوم بتحديث الواجهة هنا، فقط ننتظر الانتهاء من السحب
     }
     function touchEnd(e) {
       if(!isDragging) return;
@@ -100,22 +128,39 @@
       isDragging = false;
     }
     
-    // عرض تفاصيل المنتج مع المعرض
+    // توليد رقم طلب عشوائي من 10 خانات
+    function generateOrderNumber() {
+      let orderNumber = "";
+      for(let i = 0; i < 10; i++){
+        orderNumber += Math.floor(Math.random() * 10);
+      }
+      return orderNumber;
+    }
+    
+    // عرض تفاصيل المنتج مع المعرض والتفاصيل بجانب بعضهما
     if(product) {
       document.getElementById("product-container").innerHTML = `
-         <h2>${product.name}</h2>
-         <div class="slider-container" id="slider" 
-              ontouchstart="touchStart(event)" 
-              ontouchmove="touchMove(event)" 
-              ontouchend="touchEnd(event)">
-           <div class="slides" id="slides">
-             <!-- سيتم تحميل الصور هنا -->
+         <div class="product-flex">
+           <div class="slider-container" id="slider" 
+                ontouchstart="touchStart(event)" 
+                ontouchmove="touchMove(event)" 
+                ontouchend="touchEnd(event)">
+             <div class="slides" id="slides">
+               <!-- سيتم تحميل الصور هنا -->
+             </div>
            </div>
-         </div>
-         <div class="details">
-            <p>السعر: ${product.price} ريال</p>
-            <p>التفاصيل: ${product.description}</p>
-            <button class="order-btn" onclick="addToCart('${product.name}', ${product.price}, '${product.img}', '${product.description}')">🛒 أضف للسلة</button>
+           <div class="details">
+             <div>
+               <div class="product-name">${product.name}</div>
+               <div class="price">السعر: ${product.price} ريال</div>
+               <div><strong>التفاصيل:</strong> ${product.description}</div>
+             </div>
+             <div class="btn-group">
+               <button class="order-btn" onclick="addToCart('${product.name}', ${product.price}, '${product.img}', '${product.description}')">🛒 أضف للسلة</button>
+               <button class="buy-btn" onclick="buyNow('${product.name}', ${product.price})">شراء الآن</button>
+               <button class="back-btn" onclick="window.location.href='index.html'">العودة للتسوق</button>
+             </div>
+           </div>
          </div>
       `;
       renderSlides();
@@ -128,6 +173,15 @@
        cart.push({ name, price, img, description });
        localStorage.setItem("cart", JSON.stringify(cart));
        alert("تم إضافة المنتج إلى السلة");
+    }
+    
+    // دالة "شراء الآن" تنشئ رقم طلب وتفتح رابط واتساب مع اسم المنتج ورقم الطلب
+    function buyNow(name, price) {
+      const orderNumber = generateOrderNumber();
+      const message = `طلب شراء: ${name}\nالسعر: ${price} ريال\nرقم الطلب: ${orderNumber}`;
+      const phone = "966500640335"; // قم بتعديل رقم هاتف شركتك إذا لزم الأمر
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
     }
   </script>
 </body>
