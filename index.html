@@ -8,51 +8,34 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      /* إزالة الخلفية – استخدم لون خلفية موحد */
+      /* إزالة الخلفية ووضع لون خلفية موحد */
       background: #f5f5f5;
       direction: rtl;
     }
-    /* تغليف المحتوى بدون خلفية شفافة */
+    /* لا يتم تغطية الخلفية بصندوق */
     #content-wrapper {
       background: transparent;
       min-height: 100vh;
     }
-    /* قسم الشعار الثابت – تكبير الشعار */
-    #logo-section {
-      text-align: center;
-      padding: 10px;
-      background: #fff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    #logo-section img {
-      max-width: 200px; /* تكبير الشعار قليلاً */
-    }
-    /* نافبار الصفحة كما كانت سابقاً */
+    /* نافبار الصفحة */
     .navbar {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       background: #fff;
       padding: 10px 15px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+    /* القسم الأيسر: رمز القائمة والشعار */
     .navbar-left {
-      flex: 1;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .navbar-center {
-      flex: 1;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      color: #007bff;
-    }
+    /* القسم الأيمن: أدوات البحث والعلم والحساب والسلة */
     .navbar-right {
-      flex: 1;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
       gap: 10px;
     }
     .menu-icon, .profile-icon, .cart-icon {
@@ -92,12 +75,15 @@
       background-size: cover;
       background-position: center;
     }
-    /* عنوان المنتجات */
+    /* عنوان المنتجات مع خلفية ولون خط مناسب */
     .products-title {
       text-align: right;
       font-size: 24px;
       margin: 20px 0 10px;
-      color: #007bff;
+      background-color: #007bff;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
       font-weight: bold;
     }
     /* قسم المنتجات */
@@ -110,6 +96,19 @@
     @media screen and (max-width: 600px) {
       .products {
         grid-template-columns: repeat(2, 1fr);
+      }
+      /* تعديل تخطيط الشريط العلوي على الهواتف */
+      .navbar {
+        flex-direction: column;
+        align-items: center;
+      }
+      .navbar-left, .navbar-right {
+        width: 100%;
+        justify-content: center;
+        margin: 5px 0;
+      }
+      .search-input {
+        width: 90%;
       }
     }
     .product {
@@ -207,21 +206,16 @@
 </head>
 <body>
   <div id="content-wrapper">
-    <!-- الشعار الثابت مع الشعار المكبر -->
-    <div id="logo-section">
-      <img src="https://i.imgur.com/QrWwcAB.jpeg" alt="شعار المتجر">
-    </div>
-    <!-- نافبار الصفحة بنفس الترتيب الأصلي مع وجود أدوات البحث والملف الشخصي والسلة -->
+    <!-- الشريط العلوي: القسم الأيسر يحتوي على رمز القائمة والشعار -->
     <div class="navbar">
       <div class="navbar-left">
         <span class="menu-icon" onclick="toggleSideMenu()">☰</span>
-        <span class="profile-icon" onclick="profileClicked()">👤</span>
-      </div>
-      <div class="navbar-center">
-        <span class="navbar-title">متجر adpl</span>
+        <img src="https://i.imgur.com/QrWwcAB.jpeg" alt="شعار المتجر" style="max-width:200px;">
       </div>
       <div class="navbar-right">
         <input type="text" id="search-input" class="search-input" placeholder="ابحث عن منتجات" onkeyup="searchProducts(this.value)">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="علم السعودية" style="width:24px; cursor:pointer;">
+        <span class="profile-icon" onclick="profileClicked()" style="cursor:pointer; font-size:20px;">👤</span>
         <span class="cart-icon" onclick="window.location.href='cart.html'">
           <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle; cursor:pointer;">
           <span class="cart-count" id="cart-count">0</span>
@@ -229,7 +223,6 @@
         <span id="cart-total">المجموع: 0 ريال</span>
       </div>
     </div>
-    <!-- القائمة الجانبية -->
     <div id="side-menu">
       <a onclick="toggleSideMenu()">إغلاق القائمة</a>
       <a href="index.html" onclick="toggleSideMenu()">الرئيسية</a>
@@ -238,11 +231,8 @@
       <a onclick="window.open('https://wa.me/966500640335', '_blank'); toggleSideMenu()" class="whatsapp">تواصل معنا على واتساب</a>
       <a onclick="window.location.href='cart.html'; toggleSideMenu()">السلة</a>
     </div>
-    <!-- السلايدر -->
     <div id="slider" class="slider"></div>
-    <!-- عنوان المنتجات -->
     <div class="products-title">المنتجات</div>
-    <!-- قسم المنتجات -->
     <div id="products-container" class="products"></div>
   </div>
   
