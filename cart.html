@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>السلة - متجر adpl</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      direction: rtl;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+    .cart-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-left: 10px;
+    }
+    .cart-item div.info {
+      flex: 1;
+    }
+    .cart-item div.info h3 {
+      margin: 0;
+    }
+    .cart-item div.info p {
+      margin: 5px 0;
+    }
+    /* سعر المنتج باللون الأحمر */
+    .cart-item .price {
+      color: red;
+    }
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
+    }
+    .quantity-controls button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 3px 7px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .quantity-controls button:hover {
+      background: #0056b3;
+    }
+    .quantity-controls span {
+      font-size: 16px;
+      min-width: 20px;
+      text-align: center;
+    }
+    .remove-btn {
+      background: red;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .remove-btn:hover {
+      background: darkred;
+    }
+    .summary {
+      margin: 20px 0;
+      font-size: 18px;
+      text-align: center;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn {
+      background: green;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s ease;
+      font-size: 16px;
+    }
+    .btn:hover { background: #006400; }
+    .btn.secondary {
+      background: #007bff;
+    }
+    .btn.secondary:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>السلة</h2>
+    <div id="cart-items">
+      <!-- سيتم عرض المنتجات هنا -->
+    </div>
+    <div class="summary">
+      <p id="total-amount">المجموع: 0 ريال</p>
+      <p>رسوم التوصيل: مجانا</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn" onclick="sendOrder()">اتمام الطلب</button>
+      <button class="btn secondary" onclick="window.location.href='index.html'">العودة للتسوق</button>
+    </div>
+  </div>
+  
+  <script>
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    
+    // دالة إعادة عرض السلة بعد تحديثها
+    function displayCart() {
+      const container = document.getElementById("cart-items");
+      if(cart.length === 0) {
+        container.innerHTML = "<p>السلة فارغة</p>";
+        updateTotal();
+        return;
+      }
+      
+      // تجميع المنتجات المكررة بناءً على الاسم
+      const groupedCart = {};
+      cart.forEach(item => {
+        if(groupedCart[item.name]) {
+          groupedCart[item.name].quantity++;
+        } else {
+          groupedCart[item.name] = { ...item, quantity: 1 };
+        }
+      });
+      
+      container.innerHTML = "";
+      Object.keys(groupedCart).forEach(key => {
+        const item = groupedCart[key];
+        container.innerHTML += `
+          <div class="cart-item" onclick="goToProductDetails('${item.name}')">
+            <img src="${item.img}" alt="${item.name}">
+            <div class="info">
+              <h3>${item.name}</h3>
+              <p class="price">السعر: ${item.price} ريال</p>
+              <div class="quantity-controls" onclick="event.stopPropagation()">
+                <button onclick="decreaseQuantity('${item.name}')">-</button>
+                <span>${item.quantity}</span>
+                <button onclick="increaseQuantity('${item.name}')">+</button>
+              </div>
+            </div>
+            <button class="remove-btn" onclick="event.stopPropagation(); removeFromCart('${item.name}')">حذف</button>
+          </div>
+        `;
+      });
+      updateTotal();
+    }
+    
+    displayCart();
+    
+    // تحديث المجموع بناءً على جميع العناصر في السلة
+    function updateTotal() {
+      let total = cart.reduce((sum, item) => sum + item.price, 0);
+      document.getElementById("total-amount").innerText = "المجموع: " + total + " ريال";
+    }
+    
+    // عند النقر على عنصر من السلة للانتقال إلى صفحة التفاصيل
+    function goToProductDetails(productName) {
+      // البحث عن أول منتج مطابق للاسم في السلة
+      const product = cart.find(item => item.name === productName);
+      if(product) {
+        localStorage.setItem("selectedProduct", JSON.stringify(product));
+        window.location.href = "product-details.html";
+      }
+    }
+    
+    // دالة زيادة الكمية: تضيف نسخة جديدة من المنتج إلى السلة
+    function increaseQuantity(productName) {
+      // البحث عن المنتج في السلة وإضافة نسخة جديدة
+      const product = cart.find(item => item.name === productName);
+      if(product) {
+        cart.push(product);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        displayCart();
+      }
+    }
+    
+    // دالة تقليل الكمية: تحذف نسخة واحدة من المنتج
+    function decreaseQuantity(productName) {
+      // إذا كان عدد النسخ أكثر من 1، نحذف نسخة واحدة فقط
+      let index = cart.findIndex(item => item.name === productName);
+      if(index !== -1) {
+        cart.splice(index, 1);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        displayCart();
+      }
+    }
+    
+    // دالة حذف المنتج بالكامل (كل النسخ)
+    function removeFromCart(productName) {
+      cart = cart.filter(item => item.name !== productName);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      displayCart();
+    }
+    
+    // توليد رقم طلب عشوائي من 10 خانات
+    function generateOrderNumber() {
+      let orderNumber = "";
+      for(let i = 0; i < 10; i++){
+        orderNumber += Math.floor(Math.random() * 10);
+      }
+      return orderNumber;
+    }
+    
+    // إرسال الطلب عبر واتساب مع رقم الطلب
+    function sendOrder() {
+      if(cart.length === 0) {
+        alert("السلة فارغة");
+        return;
+      }
+      const orderNumber = generateOrderNumber();
+      const message = `تم إرسال طلبك بنجاح. رقم الطلب: ${orderNumber}`;
+      const phone = "966500640335"; // عدل رقم الهاتف حسب الحاجة
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
