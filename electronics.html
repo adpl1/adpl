@@ -11,13 +11,53 @@
       background: #f5f5f5;
       direction: rtl;
     }
-    header {
-      background: #007bff;
+    /* شريط علوي مشابه للصفحة الرئيسية */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      padding: 10px 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-bottom: 1px solid #ccc;
+    }
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .menu-icon, .profile-icon, .cart-icon {
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .cart-icon { position: relative; }
+    .cart-count {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: red;
       color: #fff;
-      padding: 20px;
-      text-align: center;
-      font-size: 28px;
+      font-size: 10px;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-weight: bold;
+    }
+    #cart-total { font-size: 14px; color: #333; }
+    .search-input {
+      display: block;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 300px;
     }
     .slider {
       width: 90%;
@@ -27,14 +67,6 @@
       background-size: cover;
       background-position: center;
     }
-            /* الشعار الثابت */
-            #logo-section {
-                text-align: center;
-                padding: 10px;
-                background: #fff;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-              }
-          
     .content {
       max-width: 1200px;
       margin: 0 auto;
@@ -81,43 +113,91 @@
       transition: background 0.3s ease;
     }
     .order-btn:hover { background: #006400; }
+    /* إشعار الإضافة للسلة */
+    #cart-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid #007bff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <header>
-    الإلكترونيات
-  </header>
+  <!-- شريط علوي -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <span class="menu-icon" onclick="toggleSideMenu()">☰</span>
+    </div>
+    <div class="navbar-right">
+      <input type="text" id="search-input" class="search-input" placeholder="ابحث عن منتجات" onkeyup="searchProducts(this.value)">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="علم السعودية" style="width:24px; cursor:pointer;">
+      <span class="profile-icon" onclick="profileClicked()" style="cursor:pointer; font-size:20px;">👤</span>
+      <span class="cart-icon" onclick="window.location.href='cart.html'">
+        <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle; cursor:pointer;">
+        <span class="cart-count" id="cart-count">0</span>
+      </span>
+      <span id="cart-total">المجموع: 0 ريال</span>
+    </div>
+  </div>
+
   <div class="slider" id="slider"></div>
   <div class="content">
     <div class="section-title">الموجودها إلكترونات</div>
     <div class="products" id="products-container">
-      <!-- 4 منتجات يمكن تعديلها لاحقاً -->
-      <div class="product">
+      <!-- المنتجات مع السعر قبل الخصم والخصم -->
+      <div class="product" onclick="goToProductDetails(0)">
         <img src="https://via.placeholder.com/200x150" alt="منتج 1">
         <h3>منتج 1</h3>
-        <p>السعر: 100 ريال</p>
-        <button class="order-btn">🛒 أضف للسلة</button>
+        <p>
+          السعر: 100 ريال 
+          <span style="font-size:0.8em; text-decoration: line-through;">120 ريال</span> 
+          <span style="color:#ff0000; font-size:1em;">20%</span>
+        </p>
+        <button class="order-btn" onclick="event.stopPropagation(); addToCart('منتج 1', 100, 'https://via.placeholder.com/200x150')">🛒 أضف للسلة</button>
       </div>
-      <div class="product">
+      <div class="product" onclick="goToProductDetails(1)">
         <img src="https://via.placeholder.com/200x150" alt="منتج 2">
         <h3>منتج 2</h3>
-        <p>السعر: 200 ريال</p>
-        <button class="order-btn">🛒 أضف للسلة</button>
+        <p>
+          السعر: 200 ريال 
+          <span style="font-size:0.8em; text-decoration: line-through;">250 ريال</span> 
+          <span style="color:#ff0000; font-size:1em;">20%</span>
+        </p>
+        <button class="order-btn" onclick="event.stopPropagation(); addToCart('منتج 2', 200, 'https://via.placeholder.com/200x150')">🛒 أضف للسلة</button>
       </div>
-      <div class="product">
+      <div class="product" onclick="goToProductDetails(2)">
         <img src="https://via.placeholder.com/200x150" alt="منتج 3">
         <h3>منتج 3</h3>
-        <p>السعر: 300 ريال</p>
-        <button class="order-btn">🛒 أضف للسلة</button>
+        <p>
+          السعر: 300 ريال 
+          <span style="font-size:0.8em; text-decoration: line-through;">350 ريال</span> 
+          <span style="color:#ff0000; font-size:1em;">14%</span>
+        </p>
+        <button class="order-btn" onclick="event.stopPropagation(); addToCart('منتج 3', 300, 'https://via.placeholder.com/200x150')">🛒 أضف للسلة</button>
       </div>
-      <div class="product">
+      <div class="product" onclick="goToProductDetails(3)">
         <img src="https://via.placeholder.com/200x150" alt="منتج 4">
         <h3>منتج 4</h3>
-        <p>السعر: 400 ريال</p>
-        <button class="order-btn">🛒 أضف للسلة</button>
+        <p>
+          السعر: 400 ريال 
+          <span style="font-size:0.8em; text-decoration: line-through;">450 ريال</span> 
+          <span style="color:#ff0000; font-size:1em;">11%</span>
+        </p>
+        <button class="order-btn" onclick="event.stopPropagation(); addToCart('منتج 4', 400, 'https://via.placeholder.com/200x150')">🛒 أضف للسلة</button>
       </div>
     </div>
   </div>
+  
+  <!-- إشعار الإضافة للسلة -->
+  <div id="cart-notification">تم اضافه للسلة</div>
   
   <script>
     let slides = [
@@ -135,6 +215,65 @@
       currentSlide = (currentSlide + 1) % slides.length;
       showSlide(currentSlide);
     }, 4000);
+    
+    // الدوال الخاصة بالمنتجات والسلة
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    function updateCartCount() {
+      document.getElementById("cart-count").innerText = cart.length;
+      updateCartTotalInNavbar();
+    }
+    function updateCartTotalInNavbar() {
+      let total = cart.reduce((sum, item) => sum + item.price, 0);
+      document.getElementById("cart-total").innerText = "المجموع: " + total + " ريال";
+    }
+    function addToCart(name, price, img) {
+      cart.push({ name, price, img });
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount();
+      showCartNotification();
+    }
+    // إظهار إشعار الإضافة لمدة ثانية واحدة فقط
+    function showCartNotification() {
+      let notif = document.getElementById("cart-notification");
+      notif.style.display = "block";
+      setTimeout(() => { notif.style.display = "none"; }, 1000);
+    }
+    updateCartCount();
+    function goToProductDetails(index) {
+      localStorage.setItem("selectedProduct", JSON.stringify(products[index]));
+      window.location.href = "product-details.html";
+    }
+    // dummy products array (يمكن تعديله لاحقاً)
+    let products = [
+      { name: "منتج 1", price: 100, img: "https://via.placeholder.com/200x150" },
+      { name: "منتج 2", price: 200, img: "https://via.placeholder.com/200x150" },
+      { name: "منتج 3", price: 300, img: "https://via.placeholder.com/200x150" },
+      { name: "منتج 4", price: 400, img: "https://via.placeholder.com/200x150" }
+    ];
+    
+    // دالة لتصفية المنتجات عند البحث
+    function searchProducts(query) {
+      let filtered = products.filter(product => product.name.toLowerCase().includes(query.toLowerCase()));
+      displayProducts(filtered);
+    }
+    function displayProducts(productList) {
+      let container = document.getElementById("products-container");
+      container.innerHTML = "";
+      productList.forEach((product, index) => {
+        container.innerHTML += `
+          <div class="product" onclick="goToProductDetails(${index})">
+            <img src="${product.img}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p>
+              السعر: ${product.price} ريال 
+              <span style="font-size:0.8em; text-decoration: line-through;">${product.price + 10} ريال</span> 
+              <span style="color:#ff0000; font-size:1em;">10%</span>
+            </p>
+            <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">🛒 أضف للسلة</button>
+          </div>
+        `;
+      });
+    }
   </script>
 </body>
 </html>
