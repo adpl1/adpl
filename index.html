@@ -18,28 +18,50 @@
       background: transparent;
       min-height: 100vh;
     }
-    /* شريط علوي منظم */
+    /* شريط التنقل العام */
     .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       background: #fff;
       padding: 10px 15px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       border-bottom: 1px solid #ccc;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
-    .navbar-left {
+    /* الصف العلوي: زر القائمة والشعار */
+    .navbar-top {
       display: flex;
       align-items: center;
+      justify-content: space-between;
     }
-    .navbar-right {
+    .menu-icon {
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .logo {
+      max-width: 100px;
+    }
+    /* الصف السفلي: حقل البحث وباقي الأدوات */
+    .navbar-bottom {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
       gap: 10px;
-      flex: 1;
-      justify-content: flex-end;
     }
-    .menu-icon, .profile-icon, .cart-icon {
+    .search-input {
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 300px;
+      transition: width 0.3s ease;
+    }
+    .flag {
+      width: 24px;
+      cursor: pointer;
+    }
+    .profile-icon,
+    .cart-icon {
       cursor: pointer;
       font-size: 20px;
     }
@@ -65,14 +87,7 @@
       font-size: 14px;
       color: #333;
     }
-    .search-input {
-      display: block;
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      width: 300px;
-      transition: width 0.3s ease;
-    }
+    /* باقي التنسيقات كما في الكود الأصلي */
     .slider {
       width: 90%;
       height: 150px;
@@ -140,9 +155,7 @@
       z-index: 600;
       padding: 20px;
     }
-    #side-menu.open {
-      transform: translateX(0);
-    }
+    #side-menu.open { transform: translateX(0); }
     #side-menu a {
       display: block;
       padding: 10px 0;
@@ -170,13 +183,16 @@
       z-index: 1000;
       display: none;
     }
-    /* تحسينات للجوال */
+    /* تحسينات للجوال (الشاشات الضيقة جداً - الوضع الرأسي) */
     @media screen and (max-width: 600px) {
       .navbar {
         padding: 5px 10px;
       }
+      .navbar-top, .navbar-bottom {
+        justify-content: space-between;
+      }
       .search-input {
-        width: 100px;
+        width: 120px;
         font-size: 10px;
         padding: 3px;
       }
@@ -186,29 +202,30 @@
       #cart-total {
         font-size: 10px;
       }
-      .navbar-right {
-        gap: 5px;
+      .logo {
+        max-width: 80px;
       }
     }
   </style>
 </head>
 <body>
   <div id="content-wrapper">
-    <!-- شريط علوي -->
+    <!-- شريط التنقل المنقسم إلى صفين -->
     <div class="navbar">
-      <div class="navbar-left">
+      <div class="navbar-top">
         <span class="menu-icon" onclick="toggleSideMenu()">☰</span>
+        <!-- الشعار في الصف العلوي -->
+        <img src="https://i.imgur.com/QrWwcAB.jpeg" alt="شعار المتجر" class="logo">
       </div>
-      <div class="navbar-right">
+      <div class="navbar-bottom">
         <input type="text" id="search-input" class="search-input" placeholder="ابحث عن منتجات" onkeyup="searchProducts(this.value)">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="علم السعودية" style="width:24px; cursor:pointer;">
-        <span class="profile-icon" onclick="profileClicked()" style="cursor:pointer;">👤</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="علم السعودية" class="flag">
+        <span class="profile-icon" onclick="profileClicked()">👤</span>
         <span class="cart-icon" onclick="window.location.href='cart.html'">
-          <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle; cursor:pointer;">
+          <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle;">
           <span class="cart-count" id="cart-count">0</span>
         </span>
         <span id="cart-total">المجموع: 0 ريال</span>
-        <img src="https://i.imgur.com/QrWwcAB.jpeg" alt="شعار المتجر" style="max-width:100px; margin-left:10px;">
       </div>
     </div>
     <!-- القائمة الجانبية -->
@@ -220,6 +237,7 @@
       <a onclick="window.open('https://wa.me/966500640335', '_blank'); toggleSideMenu()" class="whatsapp">تواصل معنا على واتساب</a>
       <a onclick="window.location.href='cart.html'; toggleSideMenu()">السلة</a>
     </div>
+    
     <div id="slider" class="slider"></div>
     <div class="products-title">المنتجات</div>
     <div id="products-container" class="products"></div>
