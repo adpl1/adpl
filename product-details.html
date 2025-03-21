@@ -51,10 +51,25 @@
     .details .product-name {
       font-weight: bold;
       font-size: 24px;
+      margin-bottom: 10px;
     }
     .details .price {
       color: #ff6666;
-      font-size: 22px;
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+    .details .old-price {
+      font-size: 18px;
+      text-decoration: line-through;
+      margin-bottom: 10px;
+    }
+    .details .discount {
+      color: #ff0000;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .details .description {
+      margin-bottom: 10px;
     }
     .btn-group {
       display: flex;
@@ -153,7 +168,9 @@
              <div>
                <div class="product-name">${product.name}</div>
                <div class="price">السعر: ${product.price} ريال</div>
-               <div><strong>التفاصيل:</strong> ${product.description}</div>
+               <div class="old-price">السعر قبل: ${product.price + 10} ريال</div>
+               <div class="discount">الخصم: 10%</div>
+               <div class="description"><strong>التفاصيل:</strong> ${product.description}</div>
              </div>
              <div class="btn-group">
                <button class="order-btn" onclick="addToCart('${product.name}', ${product.price}, '${product.img}', '${product.description}')">🛒 أضف للسلة</button>
