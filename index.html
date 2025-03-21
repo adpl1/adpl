@@ -95,12 +95,28 @@
       gap: 20px;
       padding: 10px;
     }
+    /* المنتجات على الجوال: منتجين في الصف */
     @media screen and (max-width: 600px) {
-      /* عدم تغيير اتجاه الشريط: يبقى في صف واحد */
-      .navbar {
-        flex-direction: row;
+      .products {
+        grid-template-columns: repeat(2, 1fr);
       }
-      /* تقليل عرض حقل البحث ليتيح مساحة أكبر */
+      /* تعديل ترتيب عناصر الشريط العلوي للجوال */
+      .navbar {
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      /* إعطاء الأولوية للأدوات الرئيسية في الشريط */
+      .navbar-right {
+        order: 1;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+      }
+      /* نقل زر القائمة للجوانب بحيث يكون في أقصى اليمين */
+      .navbar-left {
+        order: 2;
+      }
+      /* تقليل عرض حقل البحث لتوفير مساحة */
       .search-input {
         width: 120px;
       }
@@ -139,11 +155,15 @@
       background: #fff;
       box-shadow: -2px 0 5px rgba(0,0,0,0.3);
       transform: translateX(100%);
-      transition: transform 0.3s ease;
+      visibility: hidden;
+      transition: transform 0.3s ease, visibility 0.3s ease;
       z-index: 600;
       padding: 20px;
     }
-    #side-menu.open { transform: translateX(0); }
+    #side-menu.open {
+      transform: translateX(0);
+      visibility: visible;
+    }
     #side-menu a {
       display: block;
       padding: 10px 0;
