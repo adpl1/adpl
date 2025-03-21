@@ -28,11 +28,12 @@
       flex-direction: column;
       gap: 5px;
     }
-    /* الصف العلوي: زر القائمة والشعار */
+    /* الصف العلوي: زر القائمة والشعار على اليسار */
     .navbar-top {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
+      gap: 10px;
     }
     .menu-icon {
       cursor: pointer;
@@ -183,13 +184,13 @@
       z-index: 1000;
       display: none;
     }
-    /* تحسينات للجوال (الشاشات الضيقة جداً - الوضع الرأسي) */
+    /* تحسينات للجوال (الشاشات الضيقة جداً) */
     @media screen and (max-width: 600px) {
       .navbar {
         padding: 5px 10px;
       }
-      .navbar-top, .navbar-bottom {
-        justify-content: space-between;
+      .navbar-top {
+        gap: 5px;
       }
       .search-input {
         width: 120px;
@@ -205,17 +206,21 @@
       .logo {
         max-width: 80px;
       }
+      /* عرض منتجين في كل صف */
+      .products {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
 <body>
   <div id="content-wrapper">
-    <!-- شريط التنقل المنقسم إلى صفين -->
+    <!-- شريط التنقل المقسم إلى صفين -->
     <div class="navbar">
       <div class="navbar-top">
         <span class="menu-icon" onclick="toggleSideMenu()">☰</span>
-        <!-- الشعار في الصف العلوي -->
-        <img src="https://i.imgur.com/QrWwcAB.jpeg" alt="شعار المتجر" class="logo">
+        <!-- الشعار على اليسار -->
+        <img src="file:///C:/Users/dell/Downloads/WhatsApp%20Image%202025-03-17%20at%204.03.12%20PM%20(1)%20(1).jpeg" alt="شعار المتجر" class="logo">
       </div>
       <div class="navbar-bottom">
         <input type="text" id="search-input" class="search-input" placeholder="ابحث عن منتجات" onkeyup="searchProducts(this.value)">
