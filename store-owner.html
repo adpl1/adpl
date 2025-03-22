@@ -3,62 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>طلبات المتجر - لوحة صاحب المتجر</title>
+  <title>تسجيل الدخول - متجر adpl</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      direction: rtl;
-      background: #f5f5f5;
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 0; 
+      background-color: #f4f4f4; 
+      direction: rtl; 
     }
-    .order {
-      background: #fff;
-      margin-bottom: 15px;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    #logo-section { 
+      text-align: center; 
+      padding: 10px; 
+      background: #fff; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
     }
-    .order h3 {
-      margin-top: 0;
+    #logo-section img { 
+      max-width: 150px; 
     }
-    .order p {
-      margin: 5px 0;
+    #login-page {
+      background: #fff; 
+      max-width: 400px; 
+      margin: 80px auto 20px; 
+      padding: 20px;
+      border-radius: 10px; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+      text-align: center;
     }
-    .order ul {
-      margin: 5px 20px;
+    #login-page h2 { 
+      margin-top: 0; 
+    }
+    #login-page input { 
+      width: 90%; 
+      margin: 10px 0; 
+      padding: 10px; 
+      border: 1px solid #ccc; 
+      border-radius: 5px; 
+    }
+    #login-page button { 
+      width: 95%; 
+      padding: 10px; 
+      border: none; 
+      background: #007bff; 
+      color: #fff; 
+      border-radius: 5px; 
+      cursor: pointer; 
+      margin-top: 10px; 
+    }
+    #login-page button:hover { 
+      background: #0056b3; 
+    }
+    .back-btn { 
+      background: #333; 
+      color: #fff; 
+      border: none; 
+      padding: 10px; 
+      cursor: pointer; 
+      margin-top: 10px; 
+    }
+    .back-btn:hover { 
+      background: #555; 
     }
   </style>
 </head>
 <body>
-  <h2>طلبات المتجر</h2>
-  <div id="orders-container">
-    <!-- ستظهر الطلبات هنا -->
+  <div id="logo-section">
+    <img src="https://i.imgur.com/QrWwcAB.jpeg" alt="شعار المتجر">
   </div>
-  
+  <div id="login-page">
+    <h2>تسجيل الدخول</h2>
+    <input type="text" id="login-name" placeholder="الاسم"><br>
+    <input type="email" id="login-email" placeholder="البريد الإلكتروني"><br>
+    <input type="text" id="login-phone" placeholder="رقم الهاتف"><br>
+    <input type="password" id="login-password" placeholder="كلمة السر"><br>
+    <button onclick="login()">تسجيل الدخول</button><br>
+    <button class="back-btn" onclick="window.location.href='index.html'">رجوع</button>
+  </div>
   <script>
-    // استرجاع الطلبات من localStorage
-    const orders = JSON.parse(localStorage.getItem("orders")) || [];
-    const container = document.getElementById("orders-container");
-    
-    if(orders.length === 0) {
-      container.innerHTML = "<p>لا يوجد طلبات حتى الآن</p>";
-    } else {
-      orders.forEach(order => {
-        const orderDiv = document.createElement("div");
-        orderDiv.classList.add("order");
-        orderDiv.innerHTML = `
-          <h3>طلب رقم: ${order.orderNumber}</h3>
-          <p><strong>اسم العميل:</strong> ${order.user.name || "غير متوفر"}</p>
-          <p><strong>البريد الإلكتروني:</strong> ${order.user.email || "غير متوفر"}</p>
-          <p><strong>رقم الهاتف:</strong> ${order.user.phone || "غير متوفر"}</p>
-          <p><strong>تاريخ الطلب:</strong> ${new Date(order.date).toLocaleString()}</p>
-          <p><strong>المنتجات المطلوبة:</strong></p>
-          <ul>
-            ${order.products.map(prod => `<li>${prod.name} - السعر: ${prod.price}</li>`).join('')}
-          </ul>
-        `;
-        container.appendChild(orderDiv);
-      });
+    function login() {
+      let name = document.getElementById("login-name").value;
+      let email = document.getElementById("login-email").value;
+      let phone = document.getElementById("login-phone").value;
+      if(name && email && phone) {
+        let user = { name, email, phone };
+        localStorage.setItem("loggedUser", JSON.stringify(user));
+        localStorage.setItem("accountLabel", "حسابي");
+        // التحقق من وجود مفتاح إعادة التوجيه بعد الدخول
+        const redirectUrl = localStorage.getItem("redirectAfterLogin");
+        if(redirectUrl) {
+          localStorage.removeItem("redirectAfterLogin");
+          window.location.href = redirectUrl;
+        } else {
+          window.location.href = "index.html";
+        }
+      } else {
+        alert("يرجى ملء جميع الحقول");
+      }
     }
   </script>
 </body>
