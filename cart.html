@@ -194,9 +194,11 @@
     </div>
     <div id="discount-summary"></div>
     <div class="btn-group">
-      <!-- تغيير نص الزر إلى "اكمال الطلب عبر الواتساب" -->
+      <!-- زر الطلب عبر واتساب -->
       <button class="btn" onclick="initiateOrder()">اكمال الطلب عبر الواتساب</button>
       <button class="btn secondary" onclick="window.location.href='index.html'">العودة للتسوق</button>
+      <!-- يمكنك إضافة زر لعرض الطلبات في صفحة صاحب المتجر -->
+      <button class="btn secondary" onclick="window.location.href='store-orders.html'">عرض طلبات المتجر</button>
     </div>
   </div>
   
@@ -339,7 +341,7 @@
       return orderNumber;
     }
     
-    // بدء الطلب: التحقق من تسجيل الدخول، وتخزين مسار الصفحة قبل التوجيه لصفحة تسجيل الدخول إذا لم يكن المستخدم مسجلاً
+    // بدء الطلب: التحقق من تسجيل الدخول وتخزين مسار الصفحة لإعادة التوجيه إذا لم يكن المستخدم مسجلاً
     function initiateOrder() {
       const loggedUser = localStorage.getItem("loggedUser");
       if (!loggedUser) {
@@ -357,7 +359,7 @@
       document.getElementById("overlay").style.display = "none";
     }
     
-    // تأكيد الطلب: حفظ بيانات الطلب وإرسالها ثم فتح الواتساب
+    // تأكيد الطلب: حفظ بيانات الطلب في localStorage ثم فتح واتساب
     function confirmOrder() {
       const orderNumber = generateOrderNumber();
       const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
