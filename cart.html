@@ -155,10 +155,10 @@
     #overlay {
       display: none;
       position: fixed;
-      top:0;
-      left:0;
+      top: 0;
+      left: 0;
       width: 100%;
-      height:100%;
+      height: 100%;
       background: rgba(0,0,0,0.5);
       z-index: 900;
     }
@@ -194,8 +194,6 @@
       <!-- زر إكمال الطلب عبر واتساب -->
       <button class="btn" onclick="initiateOrder()">اكمال الطلب عبر الواتساب</button>
       <button class="btn secondary" onclick="window.location.href='index.html'">العودة للتسوق</button>
-      <!-- الزر لعرض صفحة صاحب المتجر (يمكنك حذفه لاحقاً كما طلبت) -->
-      <button class="btn secondary" onclick="window.location.href='store-orders.html'">عرض طلبات المتجر</button>
     </div>
   </div>
   
@@ -216,7 +214,7 @@
     // عرض السلة
     function displayCart() {
       const container = document.getElementById("cart-items");
-      if(cart.length === 0) {
+      if (cart.length === 0) {
         container.innerHTML = "<p>السلة فارغة</p>";
         updateTotal();
         return;
@@ -225,7 +223,7 @@
       // تجميع المنتجات المكررة بناءً على الاسم
       const groupedCart = {};
       cart.forEach(item => {
-        if(groupedCart[item.name]) {
+        if (groupedCart[item.name]) {
           groupedCart[item.name].quantity++;
         } else {
           groupedCart[item.name] = { ...item, quantity: 1 };
@@ -259,7 +257,7 @@
     // تحديث المجموع
     function updateTotal() {
       let total = cart.reduce((sum, item) => sum + item.price, 0);
-      if(discountApplied) {
+      if (discountApplied) {
         let discountedTotal = (total * 0.9).toFixed(2);
         document.getElementById("discount-summary").innerHTML = 
           "<p style='text-decoration: line-through;'>المجموع: " + total.toFixed(2) + " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:16px; height:16px; vertical-align:middle;'></p>" +
@@ -272,9 +270,9 @@
       updateCartTotalInNavbar();
     }
     
-    function applyDiscount(){
+    function applyDiscount() {
       const code = document.getElementById("discount-code").value.trim();
-      if(code === "AL334"){
+      if (code === "AL334") {
         discountApplied = true;
         updateTotal();
       } else {
@@ -285,13 +283,13 @@
     function updateCartTotalInNavbar() {
       var total = cart.reduce((sum, item) => sum + item.price, 0);
       const navbarTotal = document.getElementById("cart-total");
-      if(navbarTotal)
+      if (navbarTotal)
         navbarTotal.innerHTML = "المجموع: " + total + ' <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:16px; height:16px; vertical-align:middle;">';
     }
     
     function goToProductDetails(productName) {
       const product = cart.find(item => item.name === productName);
-      if(product) {
+      if (product) {
         localStorage.setItem("selectedProduct", JSON.stringify(product));
         window.location.href = "product-details.html";
       }
@@ -299,7 +297,7 @@
     
     function increaseQuantity(productName) {
       const product = cart.find(item => item.name === productName);
-      if(product) {
+      if (product) {
         cart.push(product);
         localStorage.setItem("cart", JSON.stringify(cart));
         displayCart();
@@ -308,7 +306,7 @@
     
     function decreaseQuantity(productName) {
       let index = cart.findIndex(item => item.name === productName);
-      if(index !== -1) {
+      if (index !== -1) {
         cart.splice(index, 1);
         localStorage.setItem("cart", JSON.stringify(cart));
         displayCart();
@@ -323,7 +321,7 @@
     
     function generateOrderNumber() {
       let orderNumber = "";
-      for(let i = 0; i < 10; i++){
+      for (let i = 0; i < 10; i++) {
         orderNumber += Math.floor(Math.random() * 10);
       }
       return orderNumber;
@@ -359,7 +357,7 @@
       localStorage.setItem("orders", JSON.stringify(orders));
       
       const message = `تم إرسال طلبك بنجاح. رقم الطلب: ${orderNumber}`;
-      const phone = "966500640335"; 
+      const phone = "966500640335";
       const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       
       closeConfirmation();
