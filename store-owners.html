@@ -120,7 +120,7 @@
             <span>${new Date(order.date).toLocaleString()}</span>
           </div>
           <div class="user-info">
-            <strong>بيانات المستخدم:</strong> <br>
+            <strong>بيانات المستخدم:</strong><br>
             ${order.user ? 
               `الاسم: ${order.user.name || 'غير متوفر'}<br>
                البريد الإلكتروني: ${order.user.email || 'غير متوفر'}<br>
@@ -135,7 +135,7 @@
                 <div class="product">
                   ${ product.img ? `<img src="${product.img}" alt="${product.name}">` : "" }
                   <div>
-                    اسم المنتج: ${product.name} <br>
+                    اسم المنتج: ${product.name}<br>
                     السعر: ${product.price} - الكمية: ${qty}
                   </div>
                 </div>
