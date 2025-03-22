@@ -212,10 +212,11 @@
   </div>
   
   <script>
+    // استرجاع السلة من localStorage
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let discountApplied = false;
     
-    // دالة إعادة عرض السلة بعد تحديثها
+    // عرض السلة
     function displayCart() {
       const container = document.getElementById("cart-items");
       if(cart.length === 0) {
@@ -258,7 +259,7 @@
     
     displayCart();
     
-    // تحديث المجموع بناءً على جميع العناصر في السلة
+    // تحديث المجموع
     function updateTotal() {
       let total = cart.reduce((sum, item) => sum + item.price, 0);
       if(discountApplied) {
@@ -285,15 +286,15 @@
       }
     }
     
-    // تحديث المجموع في شريط التنقل (إذا كان مستخدمًا في صفحات أخرى)
+    // تحديث المجموع في شريط التنقل (إذا كان موجوداً)
     function updateCartTotalInNavbar() {
-      var total = cart.reduce(function(sum, item) { return sum + item.price; }, 0);
+      var total = cart.reduce((sum, item) => sum + item.price, 0);
       const navbarTotal = document.getElementById("cart-total");
       if(navbarTotal)
         navbarTotal.innerHTML = "المجموع: " + total + ' <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:16px; height:16px; vertical-align:middle;">';
     }
     
-    // عند النقر على عنصر من السلة للانتقال إلى صفحة التفاصيل
+    // الانتقال لصفحة تفاصيل المنتج
     function goToProductDetails(productName) {
       const product = cart.find(item => item.name === productName);
       if(product) {
@@ -302,7 +303,7 @@
       }
     }
     
-    // دالة زيادة الكمية: تضيف نسخة جديدة من المنتج إلى السلة
+    // زيادة الكمية
     function increaseQuantity(productName) {
       const product = cart.find(item => item.name === productName);
       if(product) {
@@ -312,7 +313,7 @@
       }
     }
     
-    // دالة تقليل الكمية: تحذف نسخة واحدة من المنتج
+    // تقليل الكمية
     function decreaseQuantity(productName) {
       let index = cart.findIndex(item => item.name === productName);
       if(index !== -1) {
@@ -322,7 +323,7 @@
       }
     }
     
-    // دالة حذف المنتج بالكامل (كل النسخ)
+    // حذف المنتج بالكامل
     function removeFromCart(productName) {
       cart = cart.filter(item => item.name !== productName);
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -338,14 +339,13 @@
       return orderNumber;
     }
     
-    // دالة بدء الطلب: تتحقق من تسجيل الدخول ثم تظهر نافذة التأكيد
+    // بدء الطلب: التحقق من تسجيل الدخول، وتخزين مسار الصفحة قبل التوجيه لصفحة تسجيل الدخول إذا لم يكن المستخدم مسجلاً
     function initiateOrder() {
-      const user = localStorage.getItem("user");
-      if(!user) {
-        // إذا لم يكن المستخدم مسجل دخول، توجهه لصفحة تسجيل الدخول
+      const loggedUser = localStorage.getItem("loggedUser");
+      if (!loggedUser) {
+        localStorage.setItem("redirectAfterLogin", window.location.href);
         window.location.href = "login.html";
       } else {
-        // عرض نافذة التأكيد
         document.getElementById("overlay").style.display = "block";
         document.getElementById("order-confirmation").style.display = "block";
       }
@@ -357,33 +357,25 @@
       document.getElementById("overlay").style.display = "none";
     }
     
-    // عند تأكيد الطلب بعد الضغط على "اكمل"
+    // تأكيد الطلب: حفظ بيانات الطلب وإرسالها ثم فتح الواتساب
     function confirmOrder() {
-      // إنشاء رقم الطلب
       const orderNumber = generateOrderNumber();
-      // الحصول على بيانات المستخدم
-      const user = JSON.parse(localStorage.getItem("user"));
-      // تجميع بيانات الطلب
+      const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
       const order = {
         orderNumber: orderNumber,
         products: cart,
-        user: user,
+        user: loggedUser,
         date: new Date().toISOString()
       };
-      // حفظ الطلب في localStorage ضمن قائمة الطلبات
       let orders = JSON.parse(localStorage.getItem("orders")) || [];
       orders.push(order);
       localStorage.setItem("orders", JSON.stringify(orders));
       
-      // إعداد رسالة الطلب عبر الواتساب
       const message = `تم إرسال طلبك بنجاح. رقم الطلب: ${orderNumber}`;
       const phone = "966500640335"; 
       const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       
-      // إغلاق نافذة التأكيد
       closeConfirmation();
-      
-      // فتح الواتساب
       window.open(url, '_blank');
     }
     
