@@ -130,6 +130,8 @@
       color: #fff;
       font-weight: bold;
       cursor: pointer;
+      /* إضافة إطار أزرق */
+      border: 2px solid blue;
     }
     /* ألوان الدوائر */
     .electronics { background: #e74c3c; }
@@ -188,6 +190,12 @@
       object-fit: cover;
       margin-bottom: 10px;
     }
+    /* إضافة فقرة لعرض تفاصيل المنتج (الوصف) */
+    .product .description {
+      font-size: 14px;
+      color: #555;
+      margin: 8px 0;
+    }
     .order-btn {
       background: green;
       color: #fff;
@@ -199,6 +207,7 @@
       transition: background 0.3s ease;
     }
     .order-btn:hover { background: #006400; }
+    /* تنسيق رسالة الإضافة للسلة */
     #cart-notification {
       position: fixed;
       top: 50%;
@@ -212,6 +221,8 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       z-index: 1000;
       display: none;
+      font-size: 16px;
+      color: #333;
     }
   </style>
 </head>
@@ -258,8 +269,8 @@
     <div id="products-container" class="products"></div>
   </div>
   
-  <!-- إشعار الإضافة للسلة -->
-  <div id="cart-notification">تم اضافه للسلة</div>
+  <!-- رسالة الإضافة للسلة -->
+  <div id="cart-notification">✓ تم الاضافه للسله بنجاح</div>
   
   <script>
     document.addEventListener("click", function(e) {
@@ -286,7 +297,7 @@
       });
       displayProducts(filtered);
     }
-    // الآن يمكنك تعديل السعر، السعر قبل والخصم مباشرةً في كائنات المنتجات
+    // يمكنك تعديل السعر، السعر قبل والخصم مباشرةً في كائنات المنتجات
     var products = [
       { name: " سماعه ذكيه", price: 35, priceBefore: 45, discount: "10%", img: "https://ae-pic-a1.aliexpress-media.com/kf/Sff543c6811ef41c482fb31492a7882b9S.png_220x220.png_.avif", description: "LAXASFIT H9 Smartwatch" },
       { name: "يد تحكم للبليستيشن", price: 55, priceBefore: 65, discount: "15%", img: "https://ae-pic-a1.aliexpress-media.com/kf/S63b33cfa28ce4d62bbe6c68c532c1204O.jpg_220x220q75.jpg_.avif", description: "يد تحكم متطور" },
@@ -312,6 +323,7 @@
               <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore} ريال</span> 
               <span style="color:#ff0000; font-size:1em;">${product.discount}</span>
             </p>
+            <p class="description">${product.description}</p>
             <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">🛒 أضف للسلة</button>
           </div>
         `;
@@ -351,7 +363,7 @@
     function showCartNotification() {
       var notif = document.getElementById("cart-notification");
       notif.style.display = "block";
-      setTimeout(function() { notif.style.display = "none"; }, 1000);
+      setTimeout(function() { notif.style.display = "none"; }, 1500);
     }
     updateCartCount();
     function goToProductDetails(index) {
