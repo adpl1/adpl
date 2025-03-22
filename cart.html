@@ -123,8 +123,8 @@
       transition: background 0.3s ease;
       font-size: 16px;
     }
-    .btn:hover { 
-      background: #006400; 
+    .btn:hover {
+      background: #006400;
     }
     .btn.secondary {
       background: #007bff;
@@ -132,6 +132,7 @@
     .btn.secondary:hover {
       background: #0056b3;
     }
+    /* تنسيق نافذة التأكيد */
     #order-confirmation {
       display: none;
       position: fixed;
@@ -193,6 +194,8 @@
       <!-- زر إكمال الطلب عبر واتساب -->
       <button class="btn" onclick="initiateOrder()">اكمال الطلب عبر الواتساب</button>
       <button class="btn secondary" onclick="window.location.href='index.html'">العودة للتسوق</button>
+      <!-- الزر لعرض صفحة صاحب المتجر (يمكنك حذفه لاحقاً كما طلبت) -->
+      <button class="btn secondary" onclick="window.location.href='store-orders.html'">عرض طلبات المتجر</button>
     </div>
   </div>
   
