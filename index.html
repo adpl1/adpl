@@ -235,7 +235,10 @@
         <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle;">
         <span class="cart-count" id="cart-count">0</span>
       </span>
-      <span id="cart-total">المجموع: 0 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:6px; vertical-align:middle;"></span>
+      <span id="cart-total">
+        المجموع: 0 
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:4px; vertical-align:middle;">
+      </span>
     </div>
     <!-- القائمة الجانبية -->
     <div id="side-menu">
@@ -399,7 +402,6 @@
         pages: ["homepage", "furniture"]
       }
     ];
-    // تخزين المصفوفة في localStorage ليتم استخدامها في صفحة التفاصيل
     localStorage.setItem("products", JSON.stringify(products));
     
     function displayProducts(productList) {
@@ -412,9 +414,9 @@
             <h3>${product.name}</h3>
             <p>
               السعر: ${product.price}
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:6px; vertical-align:middle; margin-left:2px;"> 
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:4px; vertical-align:middle; margin-left:2px;"> 
               <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore}
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:6px; vertical-align:middle; margin-left:2px;">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:4px; vertical-align:middle; margin-left:2px;">
               </span> 
               <span style="color:#ff0000; font-size:1em;">${product.discount}</span>
             </p>
@@ -451,7 +453,7 @@
     function updateCartTotalInNavbar() {
       var total = cart.reduce(function(sum, item) { return sum + item.price; }, 0);
       document.getElementById("cart-total").innerHTML = "المجموع: " + total +
-        " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:6px; vertical-align:middle;'>";
+        " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:4px; vertical-align:middle;'>";
     }
     function addToCart(name, price, img) {
       cart.push({ name: name, price: price, img: img });
@@ -466,7 +468,6 @@
     }
     updateCartCount();
     function goToProductDetails(index) {
-      // حفظ رقم المنتج المحدد بحيث يتم استخدامه في صفحة التفاصيل لاسترجاع بيانات المنتج المحدثة
       localStorage.setItem("selectedProductIndex", index);
       window.location.href = "product-details.html";
     }
