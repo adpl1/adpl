@@ -411,11 +411,16 @@
             <img src="${product.img}" alt="${product.name}">
             <h3>${product.name}</h3>
             <p>
-              السعر: ${product.price} <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:6px; vertical-align:middle;"> 
-              <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore} <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:6px; vertical-align:middle;"></span> 
+              السعر: ${product.price}
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:6px; vertical-align:middle; margin-left:2px;"> 
+              <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore}
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:6px; vertical-align:middle; margin-left:2px;">
+              </span> 
               <span style="color:#ff0000; font-size:1em;">${product.discount}</span>
             </p>
-            <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">🛒 أضف للسلة</button>
+            <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">
+              🛒 أضف للسلة
+            </button>
           </div>
         `;
       });
@@ -445,7 +450,8 @@
     }
     function updateCartTotalInNavbar() {
       var total = cart.reduce(function(sum, item) { return sum + item.price; }, 0);
-      document.getElementById("cart-total").innerHTML = "المجموع: " + total + " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:6px; vertical-align:middle;'>";
+      document.getElementById("cart-total").innerHTML = "المجموع: " + total +
+        " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:6px; vertical-align:middle;'>";
     }
     function addToCart(name, price, img) {
       cart.push({ name: name, price: price, img: img });
