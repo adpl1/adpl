@@ -132,6 +132,48 @@
     .btn.secondary:hover {
       background: #0056b3;
     }
+    /* تنسيق نافذة التأكيد */
+    #order-confirmation {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background: #fff;
+      padding: 20px;
+      border: 2px solid #007bff;
+      border-radius: 10px;
+      z-index: 1000;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    #order-confirmation p {
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+    #overlay {
+      display: none;
+      position: fixed;
+      top:0;
+      left:0;
+      width: 100%;
+      height:100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 900;
+    }
+    /* رسالة الإضافة للسلة */
+    #cart-notification {
+      display: none;
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #4caf50;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 5px;
+      z-index: 1100;
+    }
   </style>
 </head>
 <body>
@@ -152,13 +194,22 @@
     </div>
     <div id="discount-summary"></div>
     <div class="btn-group">
-      <button class="btn" onclick="sendOrder()">اتمام الطلب</button>
+      <!-- تغيير نص الزر إلى "اكمال الطلب عبر الواتساب" -->
+      <button class="btn" onclick="initiateOrder()">اكمال الطلب عبر الواتساب</button>
       <button class="btn secondary" onclick="window.location.href='index.html'">العودة للتسوق</button>
     </div>
   </div>
   
   <!-- رسالة الإضافة للسلة -->
   <div id="cart-notification">✓ تم الاضافه للسله بنجاح</div>
+  
+  <!-- نافذة التأكيد -->
+  <div id="overlay"></div>
+  <div id="order-confirmation">
+    <p>سيتم الان توجيه طلبك على الواتساب</p>
+    <button class="btn" onclick="confirmOrder()">اكمل</button>
+    <button class="btn secondary" onclick="closeConfirmation()">الغاء</button>
+  </div>
   
   <script>
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -237,7 +288,9 @@
     // تحديث المجموع في شريط التنقل (إذا كان مستخدمًا في صفحات أخرى)
     function updateCartTotalInNavbar() {
       var total = cart.reduce(function(sum, item) { return sum + item.price; }, 0);
-      document.getElementById("cart-total").innerHTML = "المجموع: " + total + ' <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:16px; height:16px; vertical-align:middle;">';
+      const navbarTotal = document.getElementById("cart-total");
+      if(navbarTotal)
+        navbarTotal.innerHTML = "المجموع: " + total + ' <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:16px; height:16px; vertical-align:middle;">';
     }
     
     // عند النقر على عنصر من السلة للانتقال إلى صفحة التفاصيل
@@ -285,16 +338,52 @@
       return orderNumber;
     }
     
-    // إرسال الطلب عبر واتساب مع رقم الطلب
-    function sendOrder() {
-      if(cart.length === 0) {
-        alert("السلة فارغة");
-        return;
+    // دالة بدء الطلب: تتحقق من تسجيل الدخول ثم تظهر نافذة التأكيد
+    function initiateOrder() {
+      const user = localStorage.getItem("user");
+      if(!user) {
+        // إذا لم يكن المستخدم مسجل دخول، توجهه لصفحة تسجيل الدخول
+        window.location.href = "login.html";
+      } else {
+        // عرض نافذة التأكيد
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("order-confirmation").style.display = "block";
       }
+    }
+    
+    // إغلاق نافذة التأكيد
+    function closeConfirmation() {
+      document.getElementById("order-confirmation").style.display = "none";
+      document.getElementById("overlay").style.display = "none";
+    }
+    
+    // عند تأكيد الطلب بعد الضغط على "اكمل"
+    function confirmOrder() {
+      // إنشاء رقم الطلب
       const orderNumber = generateOrderNumber();
+      // الحصول على بيانات المستخدم
+      const user = JSON.parse(localStorage.getItem("user"));
+      // تجميع بيانات الطلب
+      const order = {
+        orderNumber: orderNumber,
+        products: cart,
+        user: user,
+        date: new Date().toISOString()
+      };
+      // حفظ الطلب في localStorage ضمن قائمة الطلبات
+      let orders = JSON.parse(localStorage.getItem("orders")) || [];
+      orders.push(order);
+      localStorage.setItem("orders", JSON.stringify(orders));
+      
+      // إعداد رسالة الطلب عبر الواتساب
       const message = `تم إرسال طلبك بنجاح. رقم الطلب: ${orderNumber}`;
       const phone = "966500640335"; 
       const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      
+      // إغلاق نافذة التأكيد
+      closeConfirmation();
+      
+      // فتح الواتساب
       window.open(url, '_blank');
     }
     
