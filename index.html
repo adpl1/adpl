@@ -221,7 +221,6 @@
     }
   </style>
 </head>
- 
 <body>
   <div id="content-wrapper">
     <!-- شريط التنقل -->
@@ -235,10 +234,7 @@
         <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle;">
         <span class="cart-count" id="cart-count">0</span>
       </span>
-      <span id="cart-total">
-        المجموع: 0 
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:4px; vertical-align:middle;">
-      </span>
+      <span id="cart-total">المجموع: 0 ريال</span>
     </div>
     <!-- القائمة الجانبية -->
     <div id="side-menu">
@@ -318,7 +314,7 @@
         discount: "15%", 
         img: "https://ae-pic-a1.aliexpress-media.com/kf/S63b33cfa28ce4d62bbe6c68c532c1204O.jpg_220x220q75.jpg_.avif", 
         description: "يد تحكم متطور", 
-        extraImages: [ "https://media.zid.store/0d1f8f61-cdaf-4a98-bb1a-11f083637e2f/50e4b9c8-99df-43eb-aacd-01e6d3d2019f.jpg" ],
+        extraImages: [ "https://via.placeholder.com/800x400/123456/ffffff?text=صورة+إضافية" ],
         pages: ["homepage", "electronics"]
       },
       { 
@@ -402,6 +398,7 @@
         pages: ["homepage", "furniture"]
       }
     ];
+    // تخزين المصفوفة في localStorage ليتم استخدامها في صفحة التفاصيل
     localStorage.setItem("products", JSON.stringify(products));
     
     function displayProducts(productList) {
@@ -413,16 +410,11 @@
             <img src="${product.img}" alt="${product.name}">
             <h3>${product.name}</h3>
             <p>
-              السعر: ${product.price}
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:4px; vertical-align:middle; margin-left:2px;"> 
-              <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore}
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:4px; vertical-align:middle; margin-left:2px;">
-              </span> 
+              السعر: ${product.price} ريال 
+              <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore} ريال</span> 
               <span style="color:#ff0000; font-size:1em;">${product.discount}</span>
             </p>
-            <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">
-              🛒 أضف للسلة
-            </button>
+            <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">🛒 أضف للسلة</button>
           </div>
         `;
       });
@@ -430,8 +422,8 @@
     displayProducts(products);
     
     var slides = [
-      'https://cdn.youcan.shop/stores/c60cdb42e65e6c2545ab3cc667e6fca4/others/7acJcQ8kLzBTUtrgVsY8xvxPjv32W7L4jvByqP6y.png',
-      'https://cdn.youcan.shop/stores/37a316e81ea7ca1bbe209a10b8e8694b/others/9flv1t9RDbC1PJyBRhizv7JWjK7L410qGqaDc4u5.png',
+      'https://i.ibb.co/BVSXYysy/Whats-App-Image-2025-03-22-at-5-42-21-PM.jpg',
+      'https://i.ibb.co/C5wDM4Mv/Whats-App-Image-2025-03-22-at-5-42-20-PM.jpg',
       'https://cdn.youcan.shop/stores/926ef875f015ee2050a3751649310090/others/GvZ0YESR78jSXwbSGRyv0wARqEexMPYlSgqOcQIQ.png'
     ];
     var currentSlide = 0;
@@ -452,8 +444,7 @@
     }
     function updateCartTotalInNavbar() {
       var total = cart.reduce(function(sum, item) { return sum + item.price; }, 0);
-      document.getElementById("cart-total").innerHTML = "المجموع: " + total +
-        " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:4px; vertical-align:middle;'>";
+      document.getElementById("cart-total").innerText = "المجموع: " + total + " ريال";
     }
     function addToCart(name, price, img) {
       cart.push({ name: name, price: price, img: img });
@@ -468,6 +459,7 @@
     }
     updateCartCount();
     function goToProductDetails(index) {
+      // حفظ رقم المنتج المحدد بحيث يتم استخدامه في صفحة التفاصيل لاسترجاع بيانات المنتج المحدثة
       localStorage.setItem("selectedProductIndex", index);
       window.location.href = "product-details.html";
     }
