@@ -45,7 +45,6 @@
     .cart-item div.info p {
       margin: 5px 0;
     }
-    /* سعر المنتج باللون الأحمر */
     .cart-item .price {
       color: red;
     }
@@ -89,7 +88,6 @@
       font-size: 18px;
       text-align: center;
     }
-    /* قسم كود الخصم */
     .discount-section {
       text-align: center;
       margin: 15px 0;
@@ -125,14 +123,15 @@
       transition: background 0.3s ease;
       font-size: 16px;
     }
-    .btn:hover { background: #006400; }
+    .btn:hover { 
+      background: #006400; 
+    }
     .btn.secondary {
       background: #007bff;
     }
     .btn.secondary:hover {
       background: #0056b3;
     }
-    /* تنسيق نافذة التأكيد */
     #order-confirmation {
       display: none;
       position: fixed;
@@ -162,7 +161,6 @@
       background: rgba(0,0,0,0.5);
       z-index: 900;
     }
-    /* رسالة الإضافة للسلة */
     #cart-notification {
       display: none;
       position: fixed;
@@ -183,29 +181,25 @@
       <!-- سيتم عرض المنتجات هنا -->
     </div>
     <div class="summary">
-      <!-- هنا سيتم عرض المجموع قبل وبعد الخصم -->
       <p id="total-amount"></p>
       <p>رسوم التوصيل: مجانا</p>
     </div>
-    <!-- قسم كود الخصم -->
     <div class="discount-section">
       <input type="text" id="discount-code" placeholder="أدخل كود الخصم">
       <button onclick="applyDiscount()">تم</button>
     </div>
     <div id="discount-summary"></div>
     <div class="btn-group">
-      <!-- زر الطلب عبر واتساب -->
+      <!-- زر إكمال الطلب عبر واتساب -->
       <button class="btn" onclick="initiateOrder()">اكمال الطلب عبر الواتساب</button>
       <button class="btn secondary" onclick="window.location.href='index.html'">العودة للتسوق</button>
-      <!-- يمكنك إضافة زر لعرض الطلبات في صفحة صاحب المتجر -->
+      <!-- زر لعرض صفحة صاحب المتجر -->
       <button class="btn secondary" onclick="window.location.href='store-orders.html'">عرض طلبات المتجر</button>
     </div>
   </div>
   
-  <!-- رسالة الإضافة للسلة -->
   <div id="cart-notification">✓ تم الاضافه للسله بنجاح</div>
   
-  <!-- نافذة التأكيد -->
   <div id="overlay"></div>
   <div id="order-confirmation">
     <p>سيتم الان توجيه طلبك على الواتساب</p>
@@ -277,7 +271,6 @@
       updateCartTotalInNavbar();
     }
     
-    // تطبيق كود الخصم
     function applyDiscount(){
       const code = document.getElementById("discount-code").value.trim();
       if(code === "AL334"){
@@ -288,7 +281,6 @@
       }
     }
     
-    // تحديث المجموع في شريط التنقل (إذا كان موجوداً)
     function updateCartTotalInNavbar() {
       var total = cart.reduce((sum, item) => sum + item.price, 0);
       const navbarTotal = document.getElementById("cart-total");
@@ -296,7 +288,6 @@
         navbarTotal.innerHTML = "المجموع: " + total + ' <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:16px; height:16px; vertical-align:middle;">';
     }
     
-    // الانتقال لصفحة تفاصيل المنتج
     function goToProductDetails(productName) {
       const product = cart.find(item => item.name === productName);
       if(product) {
@@ -305,7 +296,6 @@
       }
     }
     
-    // زيادة الكمية
     function increaseQuantity(productName) {
       const product = cart.find(item => item.name === productName);
       if(product) {
@@ -315,7 +305,6 @@
       }
     }
     
-    // تقليل الكمية
     function decreaseQuantity(productName) {
       let index = cart.findIndex(item => item.name === productName);
       if(index !== -1) {
@@ -325,14 +314,12 @@
       }
     }
     
-    // حذف المنتج بالكامل
     function removeFromCart(productName) {
       cart = cart.filter(item => item.name !== productName);
       localStorage.setItem("cart", JSON.stringify(cart));
       displayCart();
     }
     
-    // توليد رقم طلب عشوائي من 10 خانات
     function generateOrderNumber() {
       let orderNumber = "";
       for(let i = 0; i < 10; i++){
@@ -341,7 +328,6 @@
       return orderNumber;
     }
     
-    // بدء الطلب: التحقق من تسجيل الدخول وتخزين مسار الصفحة لإعادة التوجيه إذا لم يكن المستخدم مسجلاً
     function initiateOrder() {
       const loggedUser = localStorage.getItem("loggedUser");
       if (!loggedUser) {
@@ -353,13 +339,11 @@
       }
     }
     
-    // إغلاق نافذة التأكيد
     function closeConfirmation() {
       document.getElementById("order-confirmation").style.display = "none";
       document.getElementById("overlay").style.display = "none";
     }
     
-    // تأكيد الطلب: حفظ بيانات الطلب في localStorage ثم فتح واتساب
     function confirmOrder() {
       const orderNumber = generateOrderNumber();
       const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
