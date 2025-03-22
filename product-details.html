@@ -127,12 +127,18 @@
     let selectedIndex = localStorage.getItem("selectedProductIndex");
     let product = products[selectedIndex];
     
-    // مجموعة صور للمعرض (يمكن تعديلها لاحقاً)
-    let slideImages = [
-      product.img, 
-      "https://via.placeholder.com/800x400/ff7f7f/333333?text=الصورة+2",
-      "https://via.placeholder.com/800x400/7fbfff/333333?text=الصورة+3"
-    ];
+    // إعداد معرض الصور:
+    // إذا توافرت خاصية extraImages ووجدت صور بداخلها يتم استخدامها؛ وإلا يتم استخدام صور افتراضية
+    let slideImages = [];
+    if (product.extraImages && product.extraImages.length > 0) {
+      slideImages = [product.img, ...product.extraImages];
+    } else {
+      slideImages = [
+        product.img, 
+        "https://via.placeholder.com/800x400/ff7f7f/333333?text=الصورة+2",
+        "https://via.placeholder.com/800x400/7fbfff/333333?text=الصورة+3"
+      ];
+    }
     
     // إعداد معرض الصور مع دعم السحب
     let currentSlide = 0;
