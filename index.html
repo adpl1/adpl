@@ -190,12 +190,7 @@
       object-fit: cover;
       margin-bottom: 10px;
     }
-    <!-- في بطاقة المنتج نعرض البيانات الأساسية فقط (بدون تفاصيل الوصف) -->
-    <p>
-      السعر: ${/* السعر الحالي */ ''} ريال 
-      <span style="font-size:0.8em; text-decoration: line-through;">${/* السعر قبل الخصم */ ''} ريال</span> 
-      <span style="color:#ff0000; font-size:1em;">${/* قيمة الخصم */ ''}</span>
-    </p>
+    /* نعرض البيانات الأساسية فقط دون تفاصيل الوصف */
     .order-btn {
       background: green;
       color: #fff;
@@ -297,18 +292,111 @@
       });
       displayProducts(filtered);
     }
-    // مصفوفة المنتجات مع خاصية pages لتحديد الأماكن التي يظهر بها المنتج
+    // مصفوفة المنتجات مع خاصية pages وتحديد الصور الإضافية (extraImages) الخاصة بكل منتج
     var products = [
-      { name: " سماعه ذكيه", price: 35, priceBefore: 45, discount: "10%", img: "https://ae-pic-a1.aliexpress-media.com/kf/Sff543c6811ef41c482fb31492a7882b9S.png_220x220.png_.avif", description: "LAXASFIT H9 Smartwatch", pages: ["homepage", "electronics"] },
-      { name: "يد تحكم للبليستيشن", price: 55, priceBefore: 65, discount: "15%", img: "https://ae-pic-a1.aliexpress-media.com/kf/S63b33cfa28ce4d62bbe6c68c532c1204O.jpg_220x220q75.jpg_.avif", description: "يد تحكم متطور", pages: ["homepage", "electronics"] },
-      { name: "وحدة تحكم العاب", price: 165, priceBefore: 185, discount: "12%", img: "https://ae-pic-a1.aliexpress-media.com/kf/Sbce4990c459b46248dd1da84b86f6b0bH.jpg_220x220q75.jpg_.avif", description: "وحدة تحكم مع سماعات", pages: ["homepage", "electronics"] },
-      { name: " نظارات للرجال والنساء", price: 35, priceBefore: 45, discount: "10%", img: "https://ae-pic-a1.aliexpress-media.com/kf/Sb29f853ad2cb4a1283c307b8a74404b3d.jpg_220x220q75.jpg_.avif", description: "نظارات شمسية", pages: ["homepage", "accessories"] },
-      { name: "كفر حماية", price: 29, priceBefore: 35, discount: "15%", img: "https://ae-pic-a1.aliexpress-media.com/kf/Sf5d8e207f3be4f8cab1ae057d63be742C.jpg_220x220q75.jpg_.avif", description: "كفر حماية لهاتفك", pages: ["homepage", "accessories"] },
-      { name: "ملابس رجاليه كوريه", price: 60, priceBefore: 75, discount: "20%", img: "https://ae-pic-a1.aliexpress-media.com/kf/S0004c4980e0c4056bc74246f7eef95523.jpg_220x220q75.jpg_.avif", description: "ملابس خارجية كورية", pages: ["homepage"] },
-      { name: "ملابس رجاليه وريه عصريه", price: 60, priceBefore: 75, discount: "20%", img: "https://ae-pic-a1.aliexpress-media.com/kf/Se5d1e41430664b258ab198a14bd2dfd8k.jpg_220x220q75.jpg_.avif", description: "ملابس خارجية كورية", pages: ["homepage"] },
-      { name: "دراجة اطفال", price: 292, priceBefore: 320, discount: "9%", img: "https://ae-pic-a1.aliexpress-media.com/kf/S2f7fe53db00c4a6f9092c3c45ff6f667c.png_220x220.png_.avif", description: "دراجة أطفال", pages: ["homepage", "accessories"] },
-      { name: "طائره درون", price: 130, priceBefore: 150, discount: "40%", img: "https://ae-pic-a1.aliexpress-media.com/kf/S552185614a4f4a3d92d7bf33d5f5ebb7a.jpg_220x220q75.jpg_.avif", description: "طائرة درون احترافية", pages: ["homepage", "electronics"] },
-      { name: "رف تخزين", price: 35, priceBefore: 52, discount: "58%", img: "https://i.ibb.co/k6xpN2Cd/Whats-App-Image-2025-03-22-at-1-34-45-PM.jpg", description: "رف تخزين بمستويين", pages: ["homepage", "furniture"] }
+      { 
+        name: " سماعه ذكيه", 
+        price: 35, 
+        priceBefore: 45, 
+        discount: "10%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Sff543c6811ef41c482fb31492a7882b9S.png_220x220.png_.avif", 
+        description: "LAXASFIT H9 Smartwatch", 
+        extraImages: [
+          "https://via.placeholder.com/800x400/abc123/ffffff?text=صورة+إضافية+1",
+          "https://via.placeholder.com/800x400/def456/ffffff?text=صورة+إضافية+2"
+        ],
+        pages: ["homepage", "electronics"]
+      },
+      { 
+        name: "يد تحكم للبليستيشن", 
+        price: 55, 
+        priceBefore: 65, 
+        discount: "15%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S63b33cfa28ce4d62bbe6c68c532c1204O.jpg_220x220q75.jpg_.avif", 
+        description: "يد تحكم متطور", 
+        extraImages: [ "https://via.placeholder.com/800x400/123456/ffffff?text=صورة+إضافية" ],
+        pages: ["homepage", "electronics"]
+      },
+      { 
+        name: "وحدة تحكم العاب", 
+        price: 165, 
+        priceBefore: 185, 
+        discount: "12%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Sbce4990c459b46248dd1da84b86f6b0bH.jpg_220x220q75.jpg_.avif", 
+        description: "وحدة تحكم مع سماعات", 
+        extraImages: [],
+        pages: ["homepage", "electronics"]
+      },
+      { 
+        name: " نظارات للرجال والنساء", 
+        price: 35, 
+        priceBefore: 45, 
+        discount: "10%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Sb29f853ad2cb4a1283c307b8a74404b3d.jpg_220x220q75.jpg_.avif", 
+        description: "نظارات شمسية", 
+        extraImages: [ "https://via.placeholder.com/800x400/654321/ffffff?text=صورة+إضافية" ],
+        pages: ["homepage", "accessories"]
+      },
+      { 
+        name: "كفر حماية", 
+        price: 29, 
+        priceBefore: 35, 
+        discount: "15%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Sf5d8e207f3be4f8cab1ae057d63be742C.jpg_220x220q75.jpg_.avif", 
+        description: "كفر حماية لهاتفك", 
+        extraImages: [],
+        pages: ["homepage", "accessories"]
+      },
+      { 
+        name: "ملابس رجاليه كوريه", 
+        price: 60, 
+        priceBefore: 75, 
+        discount: "20%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S0004c4980e0c4056bc74246f7eef95523.jpg_220x220q75.jpg_.avif", 
+        description: "ملابس خارجية كورية", 
+        extraImages: [],
+        pages: ["homepage"]
+      },
+      { 
+        name: "ملابس رجاليه وريه عصريه", 
+        price: 60, 
+        priceBefore: 75, 
+        discount: "20%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Se5d1e41430664b258ab198a14bd2dfd8k.jpg_220x220q75.jpg_.avif", 
+        description: "ملابس خارجية كورية", 
+        extraImages: [],
+        pages: ["homepage"]
+      },
+      { 
+        name: "دراجة اطفال", 
+        price: 292, 
+        priceBefore: 320, 
+        discount: "9%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S2f7fe53db00c4a6f9092c3c45ff6f667c.png_220x220.png_.avif", 
+        description: "دراجة أطفال", 
+        extraImages: [],
+        pages: ["homepage", "accessories"]
+      },
+      { 
+        name: "طائره درون", 
+        price: 130, 
+        priceBefore: 150, 
+        discount: "40%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S552185614a4f4a3d92d7bf33d5f5ebb7a.jpg_220x220q75.jpg_.avif", 
+        description: "طائرة درون احترافية", 
+        extraImages: [ "https://via.placeholder.com/800x400/ff0000/ffffff?text=صورة+إضافية" ],
+        pages: ["homepage", "electronics"]
+      },
+      { 
+        name: "رف تخزين", 
+        price: 35, 
+        priceBefore: 52, 
+        discount: "58%", 
+        img: "https://i.ibb.co/k6xpN2Cd/Whats-App-Image-2025-03-22-at-1-34-45-PM.jpg", 
+        description: "رف تخزين بمستويين", 
+        extraImages: [],
+        pages: ["homepage", "furniture"]
+      }
     ];
     // تخزين المصفوفة في localStorage ليتم استخدامها في صفحة التفاصيل
     localStorage.setItem("products", JSON.stringify(products));
