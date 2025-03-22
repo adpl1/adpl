@@ -221,10 +221,7 @@
     }
   </style>
 </head>
-  document.addEventListener("DOMContentLoaded", function() {
-    document.body.innerHTML = document.body.innerHTML.replace(/ريال/g, '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" style="width: 16px; height: 16px; vertical-align: middle;">');
-});
-
+ 
 <body>
   <div id="content-wrapper">
     <!-- شريط التنقل -->
@@ -238,7 +235,7 @@
         <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle;">
         <span class="cart-count" id="cart-count">0</span>
       </span>
-      <span id="cart-total">المجموع: 0 ريال</span>
+      <span id="cart-total">المجموع: 0 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:20px; vertical-align:middle;"></span>
     </div>
     <!-- القائمة الجانبية -->
     <div id="side-menu">
@@ -414,8 +411,8 @@
             <img src="${product.img}" alt="${product.name}">
             <h3>${product.name}</h3>
             <p>
-              السعر: ${product.price} ريال 
-              <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore} ريال</span> 
+              السعر: ${product.price} <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:20px; vertical-align:middle;"> 
+              <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore} <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:20px; vertical-align:middle;"></span> 
               <span style="color:#ff0000; font-size:1em;">${product.discount}</span>
             </p>
             <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">🛒 أضف للسلة</button>
@@ -448,7 +445,7 @@
     }
     function updateCartTotalInNavbar() {
       var total = cart.reduce(function(sum, item) { return sum + item.price; }, 0);
-      document.getElementById("cart-total").innerText = "المجموع: " + total + " ريال";
+      document.getElementById("cart-total").innerHTML = "المجموع: " + total + " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:20px; vertical-align:middle;'>";
     }
     function addToCart(name, price, img) {
       cart.push({ name: name, price: price, img: img });
