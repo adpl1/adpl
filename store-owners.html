@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طلبات المتجر - صفحة صاحب المتجر</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .order {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      padding: 15px;
+    }
+    .order h3 {
+      margin-top: 0;
+    }
+    .order .user-info,
+    .order .order-info {
+      margin-bottom: 10px;
+    }
+    .order-products {
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+    .order-products div {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>طلبات المتجر</h2>
+    <div id="orders-container">
+      <!-- سيتم عرض الطلبات هنا -->
+    </div>
+  </div>
+  <script>
+    // جلب الطلبات من localStorage
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+    
+    function displayOrders() {
+      const container = document.getElementById("orders-container");
+      if (orders.length === 0) {
+        container.innerHTML = "<p>لا توجد طلبات بعد.</p>";
+        return;
+      }
+      container.innerHTML = "";
+      orders.forEach(order => {
+        const orderDiv = document.createElement("div");
+        orderDiv.className = "order";
+        orderDiv.innerHTML = `
+          <h3>رقم الطلب: ${order.orderNumber}</h3>
+          <div class="user-info">
+            <strong>بيانات المستخدم:</strong>
+            ${order.user ? `الاسم: ${order.user.name || 'غير متوفر'} - البريد: ${order.user.email || 'غير متوفر'}` : 'غير متوفر'}
+          </div>
+          <div class="order-info">
+            <strong>تاريخ الطلب:</strong> ${new Date(order.date).toLocaleString()}
+          </div>
+          <div class="order-products">
+            <strong>المنتجات:</strong>
+            <div>
+              ${order.products.map(product => {
+                const qty = product.quantity ? product.quantity : 1;
+                return `<div>اسم المنتج: ${product.name} - السعر: ${product.price} - الكمية: ${qty}</div>`;
+              }).join("")}
+            </div>
+          </div>
+        `;
+        container.appendChild(orderDiv);
+      });
+    }
+    
+    displayOrders();
+  </script>
+</body>
+</html>
