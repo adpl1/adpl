@@ -302,7 +302,7 @@
     }
     
     // مصفوفة المنتجات مع خاصية pages والصور الإضافية لكل منتج
-    var products = [
+    var products = JSON.parse(localStorage.getItem("products")) || [
       { 
         name: " سماعه ذكيه", 
         price: 35, 
@@ -438,7 +438,7 @@
       }
     ];
     
-    // تخزين المصفوفة في localStorage ليتم استخدامها في الصفحات الأخرى
+    // تحديث المصفوفة في localStorage (في حال تم إضافة منتجات جديدة عبر النموذج)
     localStorage.setItem("products", JSON.stringify(products));
     
     // عرض المنتجات الخاصة بالصفحة الرئيسية (تلك التي تحتوي على "homepage")
