@@ -181,4 +181,96 @@
         <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle;">
         <span class="cart-count" id="cart-count">0</span>
       </span>
-      <span id="cart-total">المجموع: 
+      <span id="cart-total">المجموع: 0 ريال</span>
+    </div>
+    <!-- القائمة الجانبية -->
+    <div id="side-menu">
+      <a onclick="toggleSideMenu()">إغلاق القائمة</a>
+      <a href="index.html" onclick="toggleSideMenu()">الرئيسية</a>
+      <a href="electronics.html" onclick="toggleSideMenu()">الإلكترونيات</a>
+      <a href="furniture.html" onclick="toggleSideMenu()">الاثاث</a>
+      <a href="accessories.html" onclick="toggleSideMenu()">اكسسوارات</a>
+      <a onclick="profileClicked(); toggleSideMenu()">حسابي</a>
+      <a onclick="window.open('https://wa.me/966500640335', '_blank'); toggleSideMenu()" class="whatsapp">تواصل معنا على واتساب</a>
+      <a onclick="window.location.href='cart.html'; toggleSideMenu()">السلة</a>
+    </div>
+    
+    <div class="products-title">اكسسوارات</div>
+    <div id="products-container" class="products"></div>
+  </div>
+  
+  <script>
+    // دوال القائمة الجانبية والتنقل
+    document.addEventListener("click", function(e) {
+      var sideMenu = document.getElementById("side-menu");
+      if (sideMenu.classList.contains("open") && !e.target.closest("#side-menu") && !e.target.closest(".menu-icon")) {
+        sideMenu.classList.remove("open");
+      }
+    });
+    function toggleSideMenu() {
+      document.getElementById("side-menu").classList.toggle("open");
+    }
+    function profileClicked() {
+      var user = localStorage.getItem("loggedUser");
+      window.location.href = user ? "account.html" : "login.html";
+    }
+    
+    // جلب جميع المنتجات من localStorage (التي تم تخزينها في الصفحة الرئيسية)
+    var allProducts = JSON.parse(localStorage.getItem("products")) || [];
+    // تصفية المنتجات الخاصة بالاكسسوارات (التي تحتوي على "accessories" في خاصية pages)
+    var accessoriesProducts = allProducts.filter(function(product) {
+      return product.pages && product.pages.includes("accessories");
+    });
+    
+    function displayProducts(productList) {
+      var container = document.getElementById("products-container");
+      container.innerHTML = "";
+      productList.forEach(function(product, index) {
+        container.innerHTML += `
+          <div class="product" onclick="goToProductDetails(${index})">
+            <img src="${product.img}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p>
+              السعر: ${product.price} ريال 
+              <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore} ريال</span> 
+              <span style="color:#ff0000; font-size:1em;">${product.discount}</span>
+            </p>
+            <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">🛒 أضف للسلة</button>
+          </div>
+        `;
+      });
+    }
+    
+    function searchProducts(query) {
+      var filtered = accessoriesProducts.filter(function(product) {
+        return product.name.toLowerCase().includes(query.toLowerCase());
+      });
+      displayProducts(filtered);
+    }
+    
+    displayProducts(accessoriesProducts);
+    
+    // وظائف السلة
+    var cart = JSON.parse(localStorage.getItem("cart")) || [];
+    function updateCartCount() {
+      document.getElementById("cart-count").innerText = cart.length;
+      updateCartTotalInNavbar();
+    }
+    function updateCartTotalInNavbar() {
+      var total = cart.reduce(function(sum, item) { return sum + item.price; }, 0);
+      document.getElementById("cart-total").innerText = "المجموع: " + total + " ريال";
+    }
+    function addToCart(name, price, img) {
+      cart.push({ name: name, price: price, img: img });
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount();
+      alert("تم إضافة المنتج إلى السلة");
+    }
+    function goToProductDetails(index) {
+      localStorage.setItem("selectedProduct", JSON.stringify(accessoriesProducts[index]));
+      window.location.href = "product-details.html";
+    }
+    updateCartCount();
+  </script>
+</body>
+</html>
