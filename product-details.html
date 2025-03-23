@@ -234,7 +234,7 @@
     function buyNow(name, price) {
       const orderNumber = generateOrderNumber();
       const message = `طلب شراء: ${name}\nالسعر: ${price} ريال\nرقم الطلب: ${orderNumber}`;
-      const phone = "966500640335"; // قم بتعديل رقم هاتف شركتك إذا لزم الأمر
+      const phone = "966500640335";
       const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       window.open(url, '_blank');
     }
