@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="اكسسوارات - متجر adpl">
-  <meta name="keywords" content="اكسسوارات, متجر adpl, تسوق, منتجات">
+  <meta name="description" content="صفحة الاثاث - متجر adpl">
+  <meta name="keywords" content="اثاث, متجر adpl, تسوق, منتجات">
   <meta name="author" content="adpl">
-  <title>اكسسوارات - متجر adpl</title>
+  <title>الاثاث - متجر adpl</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -196,7 +196,7 @@
       <a onclick="window.location.href='cart.html'; toggleSideMenu()">السلة</a>
     </div>
     
-    <div class="products-title">اكسسوارات</div>
+    <div class="products-title">اثاث</div>
     <div id="products-container" class="products"></div>
   </div>
   
@@ -216,11 +216,10 @@
       window.location.href = user ? "account.html" : "login.html";
     }
     
-    // جلب جميع المنتجات من localStorage (التي تم تخزينها في الصفحة الرئيسية)
+    // جلب جميع المنتجات من localStorage وتصفية المنتجات الخاصة بالاثاث (التي تحتوي على "furniture")
     var allProducts = JSON.parse(localStorage.getItem("products")) || [];
-    // تصفية المنتجات الخاصة بالاكسسوارات (التي تحتوي على "accessories" في خاصية pages)
-    var accessoriesProducts = allProducts.filter(function(product) {
-      return product.pages && product.pages.includes("accessories");
+    var furnitureProducts = allProducts.filter(function(product) {
+      return product.pages && product.pages.includes("furniture");
     });
     
     function displayProducts(productList) {
@@ -243,13 +242,13 @@
     }
     
     function searchProducts(query) {
-      var filtered = accessoriesProducts.filter(function(product) {
+      var filtered = furnitureProducts.filter(function(product) {
         return product.name.toLowerCase().includes(query.toLowerCase());
       });
       displayProducts(filtered);
     }
     
-    displayProducts(accessoriesProducts);
+    displayProducts(furnitureProducts);
     
     // وظائف السلة
     var cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -268,7 +267,7 @@
       alert("تم إضافة المنتج إلى السلة");
     }
     function goToProductDetails(index) {
-      localStorage.setItem("selectedProduct", JSON.stringify(accessoriesProducts[index]));
+      localStorage.setItem("selectedProduct", JSON.stringify(furnitureProducts[index]));
       window.location.href = "product-details.html";
     }
     updateCartCount();
