@@ -268,6 +268,7 @@
   <div id="cart-notification">✓ تم الاضافه للسله بنجاح</div>
   
   <script>
+    // إغلاق القائمة عند النقر خارجها
     document.addEventListener("click", function(e) {
       var sideMenu = document.getElementById("side-menu");
       if (sideMenu.classList.contains("open") && !e.target.closest("#side-menu") && !e.target.closest(".menu-icon")) {
@@ -286,12 +287,7 @@
       var sideMenu = document.getElementById("side-menu");
       sideMenu.classList.toggle("open");
     }
-    function searchProducts(query) {
-      var filtered = products.filter(function(product) {
-        return product.name.toLowerCase().includes(query.toLowerCase());
-      });
-      displayProducts(filtered);
-    }
+    
     // مصفوفة المنتجات مع خاصية pages والصور الإضافية لكل منتج
     var products = [
       { 
@@ -355,10 +351,7 @@
         price: 35,
         priceBefore: 40,
         discount: "10%",
-        pages: [
-          "homepage",
-          "furniture"
-        ]
+        pages: ["homepage", "furniture"]
       },
       { 
         name: "كفر حماية", 
@@ -370,18 +363,15 @@
         extraImages: [],
         pages: ["homepage", "accessories"]
       },
-            {
+      {
         name: "سماعات رأس لاسلكية أصلية",
-      description: "سماعات رأس لاسلكية أصلية Pro 4 TWS متوافقة مع البلوتوث 5.3 مقاومة للماء مع ميكروفون لسماعات الأذن Xiaomi iPhone",
+        description: "سماعات رأس لاسلكية أصلية Pro 4 TWS متوافقة مع البلوتوث 5.3 مقاومة للماء مع ميكروفون لسماعات الأذن Xiaomi iPhone",
         img: "https://ae-pic-a1.aliexpress-media.com/kf/S2e99f6d53d7248dca4e2ae57f48969f7Q.jpg_220x220q75.jpg_.avif",
         extraImages: [],
         price: 24,
         priceBefore: 20,
         discount: "15%",
-        pages: [
-          "homepage",
-          "electronics"
-        ]
+        pages: ["homepage", "electronics"]
       },
       { 
         name: "ملابس رجاليه كوريه", 
@@ -434,8 +424,14 @@
         pages: ["homepage", "furniture"]
       }
     ];
-    // تخزين المصفوفة في localStorage ليتم استخدامها في صفحة التفاصيل
+    
+    // تخزين المصفوفة في localStorage ليتم استخدامها في الصفحات الأخرى
     localStorage.setItem("products", JSON.stringify(products));
+    
+    // عرض المنتجات الخاصة بالصفحة الرئيسية (تلك التي تحتوي على "homepage")
+    var homepageProducts = products.filter(function(product) {
+      return product.pages && product.pages.includes("homepage");
+    });
     
     function displayProducts(productList) {
       var container = document.getElementById("products-container");
@@ -455,8 +451,17 @@
         `;
       });
     }
-    displayProducts(products);
     
+    function searchProducts(query) {
+      var filtered = homepageProducts.filter(function(product) {
+        return product.name.toLowerCase().includes(query.toLowerCase());
+      });
+      displayProducts(filtered);
+    }
+    
+    displayProducts(homepageProducts);
+    
+    // عرض السلايدر
     var slides = [
       'https://i.ibb.co/BVSXYysy/Whats-App-Image-2025-03-22-at-5-42-21-PM.jpg',
       'https://i.ibb.co/C5wDM4Mv/Whats-App-Image-2025-03-22-at-5-42-20-PM.jpg',
