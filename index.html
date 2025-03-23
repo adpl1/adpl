@@ -100,6 +100,7 @@
       transform: translateX(0);
       visibility: visible;
     }
+    /* تم إضافة جميع الأقسام هنا */
     #side-menu a {
       display: block;
       padding: 10px 0;
@@ -190,7 +191,6 @@
       object-fit: cover;
       margin-bottom: 10px;
     }
-    /* نعرض البيانات الأساسية فقط دون تفاصيل الوصف */
     .order-btn {
       background: green;
       color: #fff;
@@ -202,7 +202,6 @@
       transition: background 0.3s ease;
     }
     .order-btn:hover { background: #006400; }
-    /* تنسيق رسالة الإضافة للسلة */
     #cart-notification {
       position: fixed;
       top: 50%;
@@ -236,11 +235,13 @@
       </span>
       <span id="cart-total">المجموع: 0 ريال</span>
     </div>
-    <!-- القائمة الجانبية -->
+    <!-- القائمة الجانبية (تم إضافة جميع الأقسام) -->
     <div id="side-menu">
       <a onclick="toggleSideMenu()">إغلاق القائمة</a>
       <a href="index.html" onclick="toggleSideMenu()">الرئيسية</a>
       <a href="electronics.html" onclick="toggleSideMenu()">الإلكترونيات</a>
+      <a href="furniture.html" onclick="toggleSideMenu()">الاثاث</a>
+      <a href="accessories.html" onclick="toggleSideMenu()">اكسسوارات</a>
       <a onclick="profileClicked(); toggleSideMenu()">حسابي</a>
       <a onclick="window.open('https://wa.me/966500640335', '_blank'); toggleSideMenu()" class="whatsapp">تواصل معنا على واتساب</a>
       <a onclick="window.location.href='cart.html'; toggleSideMenu()">السلة</a>
