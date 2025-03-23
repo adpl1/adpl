@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="صفحة الاثاث - متجر adpl">
-  <meta name="keywords" content="اثاث, متجر adpl, تسوق, منتجات">
+  <meta name="description" content="اكسسوارات - متجر adpl">
+  <meta name="keywords" content="اكسسوارات, متجر adpl, تسوق, منتجات">
   <meta name="author" content="adpl">
-  <title>الاثاث - متجر adpl</title>
+  <title>اكسسوارات - متجر adpl</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -81,7 +81,7 @@
       color: #333;
       margin-right: 10px;
     }
-    /* القائمة الجانبية تظهر من اليسار */
+    /* القائمة الجانبية (جميع الأقسام) */
     #side-menu {
       position: fixed;
       top: 0;
@@ -100,6 +100,7 @@
       transform: translateX(0);
       visibility: visible;
     }
+    /* إضافة جميع الأقسام في القائمة الجانبية */
     #side-menu a {
       display: block;
       padding: 10px 0;
@@ -112,7 +113,7 @@
       color: #25D366;
       font-weight: bold;
     }
-    /* تنسيق المنتجات كما في الصفحة الرئيسية */
+    /* تنسيق المنتجات */
     .products-title {
       text-align: right;
       font-size: 24px;
@@ -139,7 +140,6 @@
       transition: transform 0.3s ease;
       border: 2px solid blue;
       min-height: 250px;
-      position: relative;
     }
     .product:hover { transform: scale(1.05); }
     .product img {
@@ -148,7 +148,6 @@
       object-fit: cover;
       margin-bottom: 10px;
     }
-    .product p { margin: 5px 0; }
     .order-btn {
       background: green;
       color: #fff;
@@ -176,7 +175,7 @@
     <div class="navbar">
       <span class="menu-icon" onclick="toggleSideMenu()">☰</span>
       <img src="https://i.ibb.co/S7Pq64BC/Whats-App-Image-2025-03-17-at-4-03-12-PM-1-1.jpg" alt="شعار المتجر" class="logo">
-      <input type="text" id="search-input" class="search-input" placeholder="ابحث عن منتجات">
+      <input type="text" id="search-input" class="search-input" placeholder="ابحث عن منتجات" onkeyup="searchProducts(this.value)">
       <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="علم السعودية" class="flag">
       <span class="profile-icon" onclick="profileClicked()">👤</span>
       <span class="cart-icon" onclick="window.location.href='cart.html'">
@@ -185,7 +184,7 @@
       </span>
       <span id="cart-total">المجموع: 0 ريال</span>
     </div>
-    <!-- القائمة الجانبية -->
+    <!-- القائمة الجانبية (جميع الأقسام) -->
     <div id="side-menu">
       <a onclick="toggleSideMenu()">إغلاق القائمة</a>
       <a href="index.html" onclick="toggleSideMenu()">الرئيسية</a>
@@ -197,7 +196,7 @@
       <a onclick="window.location.href='cart.html'; toggleSideMenu()">السلة</a>
     </div>
     
-    <div class="products-title">اثاث</div>
+    <div class="products-title">اكسسوارات</div>
     <div id="products-container" class="products"></div>
   </div>
   
@@ -210,24 +209,20 @@
       }
     });
     function toggleSideMenu() {
-      var sideMenu = document.getElementById("side-menu");
-      sideMenu.classList.toggle("open");
+      document.getElementById("side-menu").classList.toggle("open");
     }
     function profileClicked() {
       var user = localStorage.getItem("loggedUser");
-      if (user) {
-        window.location.href = "account.html";
-      } else {
-        window.location.href = "login.html";
-      }
+      window.location.href = user ? "account.html" : "login.html";
     }
-    // مصفوفة منتجات الاثاث مع التفاصيل
-    var products = [
-      { name: "منتج اثاث 1", price: 100, img: "https://via.placeholder.com/120", description: "وصف مختصر للمنتج" },
-      { name: "منتج اثاث 2", price: 200, img: "https://via.placeholder.com/120", description: "وصف مختصر للمنتج" },
-      { name: "منتج اثاث 3", price: 150, img: "https://via.placeholder.com/120", description: "وصف مختصر للمنتج" }
-    ];
-    // عرض المنتجات بشكل مشابه للصفحة الرئيسية
+    
+    // جلب جميع المنتجات من localStorage (التي تم تخزينها في الصفحة الرئيسية)
+    var allProducts = JSON.parse(localStorage.getItem("products")) || [];
+    // تصفية المنتجات الخاصة بالاكسسوارات (التي تحتوي على "accessories" في خاصية pages)
+    var accessoriesProducts = allProducts.filter(function(product) {
+      return product.pages && product.pages.includes("accessories");
+    });
+    
     function displayProducts(productList) {
       var container = document.getElementById("products-container");
       container.innerHTML = "";
@@ -238,15 +233,24 @@
             <h3>${product.name}</h3>
             <p>
               السعر: ${product.price} ريال 
-              <span style="font-size:0.8em; text-decoration: line-through;">${product.price + 20} ريال</span> 
-              <span style="color:#ff0000; font-size:1em;">${Math.round(100 - (100*product.price/(product.price+20)))}%</span>
+              <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore} ريال</span> 
+              <span style="color:#ff0000; font-size:1em;">${product.discount}</span>
             </p>
             <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">🛒 أضف للسلة</button>
           </div>
         `;
       });
     }
-    displayProducts(products);
+    
+    function searchProducts(query) {
+      var filtered = accessoriesProducts.filter(function(product) {
+        return product.name.toLowerCase().includes(query.toLowerCase());
+      });
+      displayProducts(filtered);
+    }
+    
+    displayProducts(accessoriesProducts);
+    
     // وظائف السلة
     var cart = JSON.parse(localStorage.getItem("cart")) || [];
     function updateCartCount() {
@@ -264,7 +268,7 @@
       alert("تم إضافة المنتج إلى السلة");
     }
     function goToProductDetails(index) {
-      localStorage.setItem("selectedProduct", JSON.stringify(products[index]));
+      localStorage.setItem("selectedProduct", JSON.stringify(accessoriesProducts[index]));
       window.location.href = "product-details.html";
     }
     updateCartCount();
