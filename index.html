@@ -130,10 +130,8 @@
       color: #fff;
       font-weight: bold;
       cursor: pointer;
-      /* إضافة إطار أزرق حول الدائرة */
       border: 2px solid blue;
     }
-    /* ألوان الدوائر */
     .electronics { background: #e74c3c; }
     .accessories { background: #27ae60; }
     .furniture { background: #2980b9; }
@@ -190,7 +188,6 @@
       object-fit: cover;
       margin-bottom: 10px;
     }
-    /* تعديل عرض السعر والخصم */
     .product p {
       margin: 5px 0;
     }
@@ -303,12 +300,12 @@
     
     // تحميل المنتجات من localStorage
     var products = JSON.parse(localStorage.getItem("products")) || [];
-    
-    // تحديث localStorage للتأكد من أن التعديلات الأخيرة موجودة
     localStorage.setItem("products", JSON.stringify(products));
     
-    // تم تعديل هذا السطر لعرض جميع المنتجات دون تصفية على أساس "homepage"
-    var homepageProducts = products;
+    // هنا يتم تصفية المنتجات لعرض تلك التي تحتوي على "homepage" في خاصية pages
+    var homepageProducts = products.filter(function(product) {
+      return product.pages && Array.isArray(product.pages) && product.pages.indexOf("homepage") !== -1;
+    });
     
     function displayProducts(productList) {
       var container = document.getElementById("products-container");
