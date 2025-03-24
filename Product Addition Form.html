@@ -154,7 +154,6 @@
     let editingIndex = null; // لتتبع حالة التعديل
 
     function formatPages(pages) {
-      // تنسيق مصفوفة الصفحات بالشكل المطلوب
       let result = "[\n";
       for (let i = 0; i < pages.length; i++) {
         result += `          "${pages[i]}"`;
@@ -189,7 +188,6 @@
     }
 
     function saveProduct() {
-      // قراءة القيم من النموذج
       const name = document.getElementById("product-name").value.trim();
       const description = document.getElementById("product-description").value.trim();
       const img = document.getElementById("product-img").value.trim();
@@ -200,12 +198,10 @@
       const discount = document.getElementById("product-discount").value.trim();
       const pages = JSON.parse(document.getElementById("product-page").value);
       
-      // إنشاء مصفوفة للصور الإضافية إن وُجدت
       const extraImages = [];
       if (img2) extraImages.push(img2);
       if (img3) extraImages.push(img3);
       
-      // إنشاء كائن المنتج
       const product = {
         name: name,
         description: description,
@@ -219,11 +215,9 @@
 
       let products = getProducts();
       if (editingIndex !== null) {
-        // تعديل المنتج الموجود
         products[editingIndex] = product;
         document.getElementById("output").innerText = "تم تعديل المنتج بنجاح.";
       } else {
-        // إضافة منتج جديد
         products.push(product);
         document.getElementById("output").innerText = "تم إنشاء المنتج بنجاح.";
       }
@@ -272,13 +266,11 @@
       document.getElementById("product-name").value = prod.name;
       document.getElementById("product-description").value = prod.description;
       document.getElementById("product-img").value = prod.img;
-      // تعبئة الصور الإضافية (إذا وجدت)
       document.getElementById("product-img2").value = prod.extraImages[0] || "";
       document.getElementById("product-img3").value = prod.extraImages[1] || "";
       document.getElementById("product-price").value = prod.price;
       document.getElementById("product-price-before").value = prod.priceBefore;
       document.getElementById("product-discount").value = prod.discount;
-      // اختيار أول قيمة في القائمة (يمكن تحسينها لاختيار القيمة المطابقة)
       document.getElementById("product-page").value = JSON.stringify(prod.pages);
       editingIndex = index;
       document.getElementById("submit-btn").innerText = "تعديل المنتج";
