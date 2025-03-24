@@ -3,281 +3,141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إضافة منتج - نموذج</title>
+  <title>إضافة منتج جديد - متجر adpl</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       direction: rtl;
       background: #f5f5f5;
-      padding: 20px;
       margin: 0;
+      padding: 20px;
     }
     .container {
-      max-width: 600px;
-      margin: 0 auto 20px;
+      max-width: 500px;
       background: #fff;
+      margin: auto;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    h2 {
+    h1 {
       text-align: center;
+      margin-bottom: 20px;
     }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
+    label {
       display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
+      margin-top: 10px;
     }
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
+    input, textarea {
       width: 100%;
       padding: 8px;
-      box-sizing: border-box;
+      margin-top: 5px;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    .form-group textarea {
-      resize: vertical;
-    }
-    .btn {
+    button {
       display: block;
       width: 100%;
       padding: 10px;
-      background: green;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-    .btn:hover {
-      background: #006400;
-    }
-    .output {
-      background: #e8e8e8;
-      padding: 10px;
-      border-radius: 5px;
       margin-top: 20px;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-    /* قائمة المنتجات المضافة */
-    #product-list {
-      margin-top: 20px;
-    }
-    .product-item {
-      background: #fff;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-bottom: 10px;
-    }
-    .product-item h4 {
-      margin: 0 0 5px;
-    }
-    .product-actions button {
-      margin-left: 5px;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .edit-btn {
       background: #007bff;
       color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
     }
-    .delete-btn {
-      background: #dc3545;
-      color: #fff;
+    button:hover {
+      background: #0056b3;
+    }
+    .info {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #555;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>نموذج إضافة منتج</h2>
-    <div class="form-group">
-      <label for="product-name">اسم المنتج</label>
-      <input type="text" id="product-name" placeholder="أدخل اسم المنتج">
-    </div>
-    <div class="form-group">
-      <label for="product-description">تفاصيل المنتج</label>
-      <textarea id="product-description" rows="3" placeholder="أدخل تفاصيل المنتج"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="product-img">الرابط الرئيسي للصورة</label>
-      <input type="text" id="product-img" placeholder="أدخل رابط الصورة الرئيسية">
-    </div>
-    <div class="form-group">
-      <label for="product-img2">الرابط للصورة الثانية</label>
-      <input type="text" id="product-img2" placeholder="أدخل رابط الصورة الثانية (اختياري)">
-    </div>
-    <div class="form-group">
-      <label for="product-img3">الرابط للصورة الثالثة</label>
-      <input type="text" id="product-img3" placeholder="أدخل رابط الصورة الثالثة (اختياري)">
-    </div>
-    <div class="form-group">
-      <label for="product-price">السعر</label>
-      <input type="number" id="product-price" placeholder="أدخل السعر">
-    </div>
-    <div class="form-group">
-      <label for="product-price-before">السعر قبل الخصم</label>
-      <input type="number" id="product-price-before" placeholder="أدخل السعر قبل الخصم">
-    </div>
-    <div class="form-group">
-      <label for="product-discount">نسبة الخصم</label>
-      <input type="text" id="product-discount" placeholder="أدخل نسبة الخصم (مثال: 15%)">
-    </div>
-    <div class="form-group">
-      <label for="product-page">مكان العرض</label>
-      <select id="product-page">
-        <option value='["homepage","furniture"]'>الرئيسية والأثاث</option>
-        <option value='["homepage","electronics"]'>الرئيسية والإلكترونيات</option>
-        <option value='["homepage","accessories"]'>الرئيسية والاكسسوارات</option>
-      </select>
-    </div>
-    <button class="btn" id="submit-btn" onclick="saveProduct()">إنشاء المنتج</button>
-    
-    <div class="output" id="output"></div>
-    
-    <hr>
-    <h3 style="text-align:center;">قائمة المنتجات المضافة</h3>
-    <div id="product-list"></div>
+    <h1>إضافة منتج جديد</h1>
+    <!-- نموذج لإدخال بيانات المنتج -->
+    <form id="productForm">
+      <label for="name">اسم المنتج:</label>
+      <input type="text" id="name" required placeholder="أدخل اسم المنتج">
+      
+      <label for="price">السعر:</label>
+      <input type="number" id="price" required placeholder="أدخل السعر">
+      
+      <label for="priceBefore">السعر قبل الخصم:</label>
+      <input type="number" id="priceBefore" required placeholder="أدخل السعر قبل الخصم">
+      
+      <label for="discount">الخصم:</label>
+      <input type="text" id="discount" required placeholder="مثلاً: 15%">
+      
+      <label for="img">رابط الصورة:</label>
+      <input type="url" id="img" required placeholder="أدخل رابط الصورة">
+      
+      <label for="description">الوصف:</label>
+      <textarea id="description" rows="3" required placeholder="أدخل وصف المنتج"></textarea>
+      
+      <label for="extraImages">صور إضافية (افصل بين الروابط بفاصلة):</label>
+      <input type="text" id="extraImages" placeholder="مثلاً: url1,url2">
+      
+      <label for="pages">الأقسام (افصل بين الأقسام بفاصلة):</label>
+      <input type="text" id="pages" required placeholder="مثلاً: homepage,accessories">
+      
+      <button type="submit">إنشاء</button>
+    </form>
+    <div class="info" id="info"></div>
   </div>
 
   <script>
-    let editingIndex = null; // لتتبع حالة التعديل
-
-    function formatPages(pages) {
-      let result = "[\n";
-      for (let i = 0; i < pages.length; i++) {
-        result += `          "${pages[i]}"`;
-        if (i !== pages.length - 1) result += ",\n";
-        else result += "\n";
-      }
-      result += "        ]";
-      return result;
-    }
-
-    function getProducts() {
-      return JSON.parse(localStorage.getItem("products")) || [];
-    }
-
-    function setProducts(products) {
-      localStorage.setItem("products", JSON.stringify(products));
-    }
-
-    function clearForm() {
-      document.getElementById("product-name").value = "";
-      document.getElementById("product-description").value = "";
-      document.getElementById("product-img").value = "";
-      document.getElementById("product-img2").value = "";
-      document.getElementById("product-img3").value = "";
-      document.getElementById("product-price").value = "";
-      document.getElementById("product-price-before").value = "";
-      document.getElementById("product-discount").value = "";
-      document.getElementById("product-page").selectedIndex = 0;
-      editingIndex = null;
-      document.getElementById("submit-btn").innerText = "إنشاء المنتج";
-      document.getElementById("output").innerText = "";
-    }
-
-    function saveProduct() {
-      const name = document.getElementById("product-name").value.trim();
-      const description = document.getElementById("product-description").value.trim();
-      const img = document.getElementById("product-img").value.trim();
-      const img2 = document.getElementById("product-img2").value.trim();
-      const img3 = document.getElementById("product-img3").value.trim();
-      const price = parseFloat(document.getElementById("product-price").value.trim());
-      const priceBefore = parseFloat(document.getElementById("product-price-before").value.trim());
-      const discount = document.getElementById("product-discount").value.trim();
-      const pages = JSON.parse(document.getElementById("product-page").value);
+    // عند تقديم النموذج، يتم إنشاء الكائن المطلوب وإضافته إلى مصفوفة المنتجات في localStorage
+    document.getElementById("productForm").addEventListener("submit", function(e) {
+      e.preventDefault();
       
-      const extraImages = [];
-      if (img2) extraImages.push(img2);
-      if (img3) extraImages.push(img3);
+      // استرجاع القيم من الحقول
+      const name = document.getElementById("name").value.trim();
+      const price = parseFloat(document.getElementById("price").value);
+      const priceBefore = parseFloat(document.getElementById("priceBefore").value);
+      const discount = document.getElementById("discount").value.trim();
+      const img = document.getElementById("img").value.trim();
+      const description = document.getElementById("description").value.trim();
       
-      const product = {
-        name: name,
-        description: description,
-        img: img,
+      // تحويل الحقل الخاص بالصور الإضافية إلى مصفوفة (إذا كان فارغاً تُعتبر مصفوفة فارغة)
+      const extraImagesStr = document.getElementById("extraImages").value.trim();
+      const extraImages = extraImagesStr ? extraImagesStr.split(",").map(s => s.trim()) : [];
+      
+      // تحويل الحقل الخاص بالأقسام إلى مصفوفة
+      const pagesStr = document.getElementById("pages").value.trim();
+      const pages = pagesStr ? pagesStr.split(",").map(s => s.trim()) : [];
+      
+      // الكائن المطلوب إضافته (بنفس التنسيق المطلوب)
+      const newProduct = { 
+        name: name, 
+        price: price, 
+        priceBefore: priceBefore, 
+        discount: discount, 
+        img: img, 
+        description: description, 
         extraImages: extraImages,
-        price: price,
-        priceBefore: priceBefore,
-        discount: discount,
         pages: pages
       };
 
-      let products = getProducts();
-      if (editingIndex !== null) {
-        products[editingIndex] = product;
-        document.getElementById("output").innerText = "تم تعديل المنتج بنجاح.";
-      } else {
-        products.push(product);
-        document.getElementById("output").innerText = "تم إنشاء المنتج بنجاح.";
-      }
-      setProducts(products);
-      clearForm();
-      displayProductList();
-    }
-
-    function displayProductList() {
-      const products = getProducts();
-      const listContainer = document.getElementById("product-list");
-      listContainer.innerHTML = "";
-      products.forEach((prod, index) => {
-        const div = document.createElement("div");
-        div.className = "product-item";
-        div.innerHTML = `<h4>${prod.name}</h4>
-          <pre>{
-  name: "${prod.name}",
-  description: "${prod.description}",
-  img: "${prod.img}",
-  extraImages: ${JSON.stringify(prod.extraImages)},
-  price: ${prod.price},
-  priceBefore: ${prod.priceBefore},
-  discount: "${prod.discount}",
-  pages: ${formatPages(prod.pages)}
-}</pre>
-          <div class="product-actions">
-            <button class="edit-btn" onclick="editProduct(${index})">تعديل</button>
-            <button class="delete-btn" onclick="deleteProduct(${index})">حذف</button>
-          </div>`;
-        listContainer.appendChild(div);
-      });
-    }
-
-    function deleteProduct(index) {
-      let products = getProducts();
-      products.splice(index, 1);
-      setProducts(products);
-      displayProductList();
-      document.getElementById("output").innerText = "تم حذف المنتج.";
-    }
-
-    function editProduct(index) {
-      let products = getProducts();
-      const prod = products[index];
-      document.getElementById("product-name").value = prod.name;
-      document.getElementById("product-description").value = prod.description;
-      document.getElementById("product-img").value = prod.img;
-      document.getElementById("product-img2").value = prod.extraImages[0] || "";
-      document.getElementById("product-img3").value = prod.extraImages[1] || "";
-      document.getElementById("product-price").value = prod.price;
-      document.getElementById("product-price-before").value = prod.priceBefore;
-      document.getElementById("product-discount").value = prod.discount;
-      document.getElementById("product-page").value = JSON.stringify(prod.pages);
-      editingIndex = index;
-      document.getElementById("submit-btn").innerText = "تعديل المنتج";
-    }
-
-    // عند تحميل الصفحة، عرض القائمة المحدثة
-    displayProductList();
+      // استرجاع المصفوفة الحالية من localStorage (إذا لم توجد يتم إنشاء مصفوفة فارغة)
+      let products = JSON.parse(localStorage.getItem("products")) || [];
+      // إضافة المنتج الجديد دون نقله إلى الصفحة الرئيسية
+      products.push(newProduct);
+      // حفظ المصفوفة المحدثة في localStorage
+      localStorage.setItem("products", JSON.stringify(products));
+      
+      // عرض رسالة نجاح دون إعادة توجيه أو نقل المنتج
+      document.getElementById("info").innerText = "تم إضافة المنتج بنجاح.";
+      
+      // إعادة تعيين النموذج
+      this.reset();
+    });
   </script>
 </body>
 </html>
