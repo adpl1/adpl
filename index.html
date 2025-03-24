@@ -302,7 +302,7 @@
     var products = JSON.parse(localStorage.getItem("products")) || [];
     localStorage.setItem("products", JSON.stringify(products));
     
-    // هنا يتم تصفية المنتجات لعرض تلك التي تحتوي على "homepage" في خاصية pages
+    // تصفية المنتجات بحيث تُعرض تلك التي تحتوي على "homepage" في خاصية pages
     var homepageProducts = products.filter(function(product) {
       return product.pages && Array.isArray(product.pages) && product.pages.indexOf("homepage") !== -1;
     });
