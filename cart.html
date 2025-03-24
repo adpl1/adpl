@@ -207,11 +207,10 @@
   </div>
   
   <script>
-    // استرجاع السلة من localStorage
+    // استرجاع السلة من localStorage (يمكنك تحسين هذا الجزء حسب احتياجاتك)
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let discountApplied = false;
     
-    // عرض السلة
     function displayCart() {
       const container = document.getElementById("cart-items");
       if (cart.length === 0) {
@@ -254,7 +253,6 @@
     
     displayCart();
     
-    // تحديث المجموع
     function updateTotal() {
       let total = cart.reduce((sum, item) => sum + item.price, 0);
       if (discountApplied) {
@@ -343,6 +341,7 @@
       document.getElementById("overlay").style.display = "none";
     }
     
+    // تعديل دالة تأكيد الطلب لإرسال البيانات إلى الخادم المركزي
     function confirmOrder() {
       const orderNumber = generateOrderNumber();
       const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
@@ -364,16 +363,28 @@
         user: loggedUser,
         date: new Date().toISOString()
       };
-      let orders = JSON.parse(localStorage.getItem("orders")) || [];
-      orders.push(order);
-      localStorage.setItem("orders", JSON.stringify(orders));
       
-      const message = `تم إرسال طلبك بنجاح. رقم الطلب: ${orderNumber}`;
-      const phone = "966500640335";
-      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-      
-      closeConfirmation();
-      window.open(url, '_blank');
+      // إرسال الطلب إلى الخادم باستخدام fetch
+      fetch("https://yourserver.com/api/orders", {  // استبدل هذا الرابط بعنوان الخادم الخاص بك
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(order)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("تم حفظ الطلب:", data);
+        const message = `تم إرسال طلبك بنجاح. رقم الطلب: ${orderNumber}`;
+        const phone = "966500640335";
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        closeConfirmation();
+        window.open(url, '_blank');
+      })
+      .catch(error => {
+        console.error("حدث خطأ أثناء حفظ الطلب:", error);
+        alert("حدث خطأ أثناء إرسال الطلب. حاول مرة أخرى.");
+      });
     }
     
     function showCartNotification() {
