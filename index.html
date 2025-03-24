@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="متجر Adpl - أفضل المنتجات بأفضل الأسعار. اشترِ الآن أحدث المنتجات التقنية، الكترونيات، والإكسسوارات بتخفيضات رائعة!">
-  <meta name="keywords" content="adpl, متجر adpl, شراء أونلاين, تسوق, تخفيضات, منتجات تقنية, ملابس, إكسسوارات, متجر ادبل, ادبل, الكترونيات">
+  <meta name="keywords" content="adpl, متجر adpl, شراء أونلاين, تسوق, تخفيضات, منتجات تقنية, ملابس, اكسسوارات, متجر ادبل, ادبل, الكترونيات">
   <meta name="author" content="adpl">
   <title>الصفحة الرئيسية - متجر adpl</title>
   <style>
@@ -307,10 +307,8 @@
     // تحديث localStorage للتأكد من أن التعديلات الأخيرة موجودة
     localStorage.setItem("products", JSON.stringify(products));
     
-    // عرض المنتجات الخاصة بالصفحة الرئيسية (تلك التي تحتوي على "homepage")
-    var homepageProducts = products.filter(function(product) {
-      return product.pages && product.pages.includes("homepage");
-    });
+    // تم تعديل هذا السطر لعرض جميع المنتجات دون تصفية على أساس "homepage"
+    var homepageProducts = products;
     
     function displayProducts(productList) {
       var container = document.getElementById("products-container");
