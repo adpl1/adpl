@@ -159,7 +159,7 @@
     }
     
     // جلب الطلبات من الخادم عند تحميل الصفحة
-    fetch("https://yourserver.com/api/orders")  // استبدل هذا الرابط بعنوان الخادم الخاص بك
+    fetch("http://localhost:3000/api/orders")  // استبدل هذا الرابط بعنوان الخادم الخاص بك
       .then(response => response.json())
       .then(data => {
         orders = data.orders;
