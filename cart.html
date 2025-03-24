@@ -346,9 +346,21 @@
     function confirmOrder() {
       const orderNumber = generateOrderNumber();
       const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+      
+      // تجميع المنتجات وإضافة خاصية الكمية
+      const groupedProducts = {};
+      cart.forEach(item => {
+        if (groupedProducts[item.name]) {
+          groupedProducts[item.name].quantity++;
+        } else {
+          groupedProducts[item.name] = { ...item, quantity: 1 };
+        }
+      });
+      const productsArray = Object.values(groupedProducts);
+      
       const order = {
         orderNumber: orderNumber,
-        products: cart,
+        products: productsArray,
         user: loggedUser,
         date: new Date().toISOString()
       };
