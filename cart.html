@@ -3,258 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>السلة - متجر adpl</title>
-  <style>
-    /* التنسيقات كما هي */
-    body { font-family: Arial, sans-serif; margin: 0; direction: rtl; background: #f5f5f5; }
-    .container { max-width: 800px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .cart-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #ccc; cursor: pointer; }
-    .cart-item:last-child { border-bottom: none; }
-    .cart-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; margin-left: 10px; }
-    .cart-item div.info { flex: 1; }
-    .cart-item div.info h3 { margin: 0; }
-    .cart-item div.info p { margin: 5px 0; }
-    .cart-item .price { color: red; }
-    .quantity-controls { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
-    .quantity-controls button { background: #007bff; color: #fff; border: none; padding: 3px 7px; border-radius: 3px; cursor: pointer; font-size: 14px; }
-    .quantity-controls button:hover { background: #0056b3; }
-    .quantity-controls span { font-size: 16px; min-width: 20px; text-align: center; }
-    .remove-btn { background: red; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: background 0.3s ease; }
-    .remove-btn:hover { background: darkred; }
-    .summary { margin: 20px 0; font-size: 18px; text-align: center; }
-    .discount-section { text-align: center; margin: 15px 0; }
-    .discount-section input { padding: 8px; font-size: 16px; text-align: center; }
-    .discount-section button { padding: 8px 12px; font-size: 16px; background: orange; color: #fff; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; }
-    .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-    .btn { background: green; color: #fff; border: none; padding: 10px; cursor: pointer; border-radius: 5px; transition: background 0.3s ease; font-size: 16px; }
-    .btn:hover { background: #006400; }
-    .btn.secondary { background: #007bff; }
-    .btn.secondary:hover { background: #0056b3; }
-    /* نافذة التأكيد */
-    #order-confirmation { display: none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -30%); background: #fff; padding: 20px; border: 2px solid #007bff; border-radius: 10px; z-index: 1000; text-align: center; width: 90%; max-width: 400px; }
-    #order-confirmation p { margin-bottom: 20px; font-size: 18px; }
-    #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 900; }
-    #cart-notification { display: none; position: fixed; top: 10px; right: 10px; background: #4caf50; color: #fff; padding: 10px 15px; border-radius: 5px; z-index: 1100; }
-  </style>
+  <title>سلة المشتريات</title>
 </head>
 <body>
-  <div class="container">
-    <h2>السلة</h2>
-    <div id="cart-items">
-      <!-- سيتم عرض المنتجات هنا -->
-    </div>
-    <div class="summary">
-      <p id="total-amount"></p>
-      <p>رسوم التوصيل: مجانا</p>
-    </div>
-    <div class="discount-section">
-      <input type="text" id="discount-code" placeholder="أدخل كود الخصم">
-      <button onclick="applyDiscount()">تم</button>
-    </div>
-    <div id="discount-summary"></div>
-    <div class="btn-group">
-      <button class="btn" onclick="initiateOrder()">اكمال الطلب عبر الواتساب</button>
-      <button class="btn secondary" onclick="window.location.href='index.html'">العودة للتسوق</button>
-    </div>
-  </div>
-  
-  <div id="cart-notification">✓ تم الاضافه للسله بنجاح</div>
-  
-  <div id="overlay"></div>
-  <div id="order-confirmation">
-    <p>سيتم الان توجيه طلبك على الواتساب</p>
-    <button class="btn" onclick="confirmOrder()">اكمل</button>
-    <button class="btn secondary" onclick="closeConfirmation()">الغاء</button>
-  </div>
-  
+  <h2>سلة المشتريات</h2>
+  <ul id="cart-items">
+    <li>منتج 1 - 50 ريال × 2</li>
+    <li>منتج 2 - 30 ريال × 1</li>
+  </ul>
+  <button onclick="completeOrder()">أكمل</button>
+
   <script>
-    // استرجاع السلة من localStorage
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    let discountApplied = false;
-    
-    function displayCart() {
-      const container = document.getElementById("cart-items");
-      if (cart.length === 0) {
-        container.innerHTML = "<p>السلة فارغة</p>";
-        updateTotal();
-        return;
-      }
-      
-      // تجميع المنتجات المكررة بناءً على الاسم
-      const groupedCart = {};
-      cart.forEach(item => {
-        if (groupedCart[item.name]) {
-          groupedCart[item.name].quantity++;
-        } else {
-          groupedCart[item.name] = { ...item, quantity: 1 };
-        }
-      });
-      
-      container.innerHTML = "";
-      Object.keys(groupedCart).forEach(key => {
-        const item = groupedCart[key];
-        container.innerHTML += `
-          <div class="cart-item" onclick="goToProductDetails('${item.name}')">
-            <img src="${item.img}" alt="${item.name}">
-            <div class="info">
-              <h3>${item.name}</h3>
-              <p class="price">السعر: ${item.price} <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:16px; height:16px; vertical-align:middle;"></p>
-              <div class="quantity-controls" onclick="event.stopPropagation()">
-                <button onclick="decreaseQuantity('${item.name}')">-</button>
-                <span>${item.quantity}</span>
-                <button onclick="increaseQuantity('${item.name}')">+</button>
-              </div>
-            </div>
-            <button class="remove-btn" onclick="event.stopPropagation(); removeFromCart('${item.name}')">حذف</button>
-          </div>
-        `;
-      });
-      updateTotal();
-    }
-    
-    displayCart();
-    
-    function updateTotal() {
-      let total = cart.reduce((sum, item) => sum + item.price, 0);
-      if (discountApplied) {
-        let discountedTotal = (total * 0.9).toFixed(2);
-        document.getElementById("discount-summary").innerHTML = 
-          "<p style='text-decoration: line-through;'>المجموع: " + total.toFixed(2) + " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:16px; height:16px; vertical-align:middle;'></p>" +
-          "<p style='font-weight: bold; color: #000;'>المجموع بعد الخصم: " + discountedTotal + " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:16px; height:16px; vertical-align:middle;'></p>";
-        document.getElementById("total-amount").innerText = "";
-      } else {
-        document.getElementById("total-amount").innerHTML = "المجموع: " + total + " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:16px; height:16px; vertical-align:middle;'>";
-        document.getElementById("discount-summary").innerHTML = "";
-      }
-      updateCartTotalInNavbar();
-    }
-    
-    function applyDiscount() {
-      const code = document.getElementById("discount-code").value.trim();
-      if (code === "AL334") {
-        discountApplied = true;
-        updateTotal();
-      } else {
-        alert("كود الخصم غير صحيح");
-      }
-    }
-    
-    function updateCartTotalInNavbar() {
-      var total = cart.reduce((sum, item) => sum + item.price, 0);
-      const navbarTotal = document.getElementById("cart-total");
-      if (navbarTotal)
-        navbarTotal.innerHTML = "المجموع: " + total + ' <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:16px; height:16px; vertical-align:middle;">';
-    }
-    
-    function goToProductDetails(productName) {
-      const product = cart.find(item => item.name === productName);
-      if (product) {
-        localStorage.setItem("selectedProduct", JSON.stringify(product));
-        window.location.href = "product-details.html";
-      }
-    }
-    
-    function increaseQuantity(productName) {
-      const product = cart.find(item => item.name === productName);
-      if (product) {
-        cart.push(product);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        displayCart();
-      }
-    }
-    
-    function decreaseQuantity(productName) {
-      let index = cart.findIndex(item => item.name === productName);
-      if (index !== -1) {
-        cart.splice(index, 1);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        displayCart();
-      }
-    }
-    
-    function removeFromCart(productName) {
-      cart = cart.filter(item => item.name !== productName);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      displayCart();
-    }
-    
-    function generateOrderNumber() {
-      let orderNumber = "";
-      for (let i = 0; i < 10; i++) {
-        orderNumber += Math.floor(Math.random() * 10);
-      }
-      return orderNumber;
-    }
-    
-    function initiateOrder() {
-      const loggedUser = localStorage.getItem("loggedUser");
-      if (!loggedUser) {
-        localStorage.setItem("redirectAfterLogin", window.location.href);
-        window.location.href = "login.html";
-      } else {
-        document.getElementById("overlay").style.display = "block";
-        document.getElementById("order-confirmation").style.display = "block";
-      }
-    }
-    
-    function closeConfirmation() {
-      document.getElementById("order-confirmation").style.display = "none";
-      document.getElementById("overlay").style.display = "none";
-    }
-    
-    function confirmOrder() {
-      const orderNumber = generateOrderNumber();
-      const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
-      
-      // تجميع المنتجات مع الكمية
-      const groupedProducts = {};
-      cart.forEach(item => {
-        if (groupedProducts[item.name]) {
-          groupedProducts[item.name].quantity++;
-        } else {
-          groupedProducts[item.name] = { ...item, quantity: 1 };
-        }
-      });
-      const productsArray = Object.values(groupedProducts);
-      
+    function completeOrder() {
       const order = {
-        orderNumber: orderNumber,
-        products: productsArray,
-        user: loggedUser,
-        date: new Date().toISOString()
-      };
-      
-      // إرسال الطلب إلى الخادم عبر الرابط العام
-      fetch("https://jade-elementary-powerful-licence.trycloudflare.com/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
+        orderNumber: "ORD" + Math.floor(Math.random() * 10000),
+        date: new Date().toISOString(),
+        user: {
+          name: "أحمد",
+          email: "ahmed@example.com",
+          phone: "0551234567"
         },
+        products: [
+          { name: "منتج 1", price: 50, quantity: 2 },
+          { name: "منتج 2", price: 30, quantity: 1 }
+        ]
+      };
+
+      // إرسال الطلب إلى API التخزين
+      fetch("https://api.example.com/store-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(order)
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log("تم حفظ الطلب:", data);
-        const message = `تم إرسال طلبك بنجاح. رقم الطلب: ${orderNumber}`;
-        const phone = "966500640335";
-        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-        closeConfirmation();
-        window.open(url, '_blank');
-      })
-      .catch(error => {
-        console.error("حدث خطأ أثناء حفظ الطلب:", error);
-        alert("حدث خطأ أثناء إرسال الطلب. حاول مرة أخرى.");
-      });
+      }).then(response => response.json())
+        .then(data => console.log("تم تخزين الطلب:", data))
+        .catch(error => console.error("خطأ في تخزين الطلب:", error));
+
+      // إعادة التوجيه إلى واتساب مع تفاصيل الطلب
+      const whatsappMessage = `طلب جديد:\nرقم الطلب: ${order.orderNumber}\nاسم العميل: ${order.user.name}\nالهاتف: ${order.user.phone}\nالمنتجات:\n` +
+        order.products.map(p => `${p.name} - ${p.price} ريال × ${p.quantity}`).join("\n") +
+        `\nالمجموع: ${order.products.reduce((sum, p) => sum + (p.price * p.quantity), 0)} ريال`;
+
+      const whatsappUrl = `https://wa.me/966551234567?text=${encodeURIComponent(whatsappMessage)}`;
+      window.location.href = whatsappUrl;
     }
-    
-    function showCartNotification() {
-      var notif = document.getElementById("cart-notification");
-      notif.style.display = "block";
-      setTimeout(function() { notif.style.display = "none"; }, 1500);
-    }
-    
-    updateCartTotalInNavbar();
-    displayCart();
   </script>
 </body>
 </html>
