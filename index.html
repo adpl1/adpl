@@ -8,6 +8,7 @@
   <meta name="author" content="adpl">
   <title>adpl-ادبل</title>
   <link rel="icon" type="image/png" href="https://i.ibb.co/0yvVmkjh/Whats-App-Image-2025-03-17-at-4-03-12-PM-1-1-1.jpg">
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -77,7 +78,11 @@
       align-items: center;
       justify-content: center;
     }
-    /* تم حذف عرض "المجموع: 0 ريال" */
+    #cart-total {
+      font-size: 10px;
+      color: #333;
+      margin-right: 10px;
+    }
     /* القائمة الجانبية */
     #side-menu {
       position: fixed;
@@ -167,6 +172,7 @@
       .navbar .search-input { width: 100px; font-size: 9px; }
       .navbar .flag { width: 18px; }
       .navbar .profile-icon, .navbar .cart-icon { font-size: 14px; }
+      #cart-total { font-size: 9px; }
     }
     .product {
       background: #fff;
@@ -186,16 +192,17 @@
       object-fit: cover;
       margin-bottom: 10px;
     }
+    /* تعديل عرض السعر والخصم */
     .product p {
       margin: 5px 0;
     }
     .price {
       font-size: 1.2em;
-      color: #8B0000;
+      color: #8B0000; /* أحمر غامق */
       font-weight: bold;
     }
     .discount {
-      color: #FF6347;
+      color: #FF6347; /* أحمر فاتح */
       font-size: 1em;
     }
     .order-btn {
@@ -232,7 +239,7 @@
     <!-- شريط التنقل -->
     <div class="navbar">
       <span class="menu-icon" onclick="toggleSideMenu()">☰</span>
-      <img src="https://i.ibb.co/S7Pq64BC/Whats-App-Image-2025-03-17-at-4-03-12-PM-1-1-1.jpg" alt="شعار المتجر" class="logo">
+      <img src="https://i.ibb.co/S7Pq64BC/Whats-App-Image-2025-03-17-at-4-03-12-PM-1-1.jpg" alt="شعار المتجر" class="logo">
       <input type="text" id="search-input" class="search-input" placeholder="ابحث عن منتجات" onkeyup="searchProducts(this.value)">
       <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="علم السعودية" class="flag">
       <span class="profile-icon" onclick="profileClicked()">👤</span>
@@ -240,32 +247,207 @@
         <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle;">
         <span class="cart-count" id="cart-count">0</span>
       </span>
-      <!-- تم حذف عنصر عرض المجموع -->
+      <span id="cart-total">المجموع: 0 ريال</span>
     </div>
-    <!-- المحتوى الرئيسي -->
+    <!-- القائمة الجانبية -->
+    <div id="side-menu">
+      <a onclick="toggleSideMenu()">إغلاق القائمة</a>
+      <a href="index.html" onclick="toggleSideMenu()">الرئيسية</a>
+      <a href="electronics.html" onclick="toggleSideMenu()">الإلكترونيات</a>
+      <a href="furniture.html" onclick="toggleSideMenu()">الاثاث</a>
+      <a href="accessories.html" onclick="toggleSideMenu()">اكسسوارات</a>
+      <a onclick="profileClicked(); toggleSideMenu()">حسابي</a>
+      <a onclick="window.open('https://wa.me/966500640335', '_blank'); toggleSideMenu()" class="whatsapp">تواصل معنا على واتساب</a>
+      <a onclick="window.location.href='cart.html'; toggleSideMenu()">السلة</a>
+    </div>
+    
+    <!-- دوائر التصنيفات -->
+    <div class="category-circles">
+      <a href="furniture.html">
+        <div class="category-circle furniture">اثاث</div>
+      </a>
+      <a href="accessories.html">
+        <div class="category-circle accessories">اكسسوارات</div>
+      </a>
+      <a href="electronics.html">
+        <div class="category-circle electronics">الكترونيات</div>
+      </a>
+    </div>
+    
+    <div id="slider" class="slider"></div>
+    <div class="products-title">المنتجات</div>
     <div id="products-container" class="products"></div>
   </div>
   
+  <!-- رسالة الإضافة للسلة -->
+  <div id="cart-notification">✓ تم الاضافه للسله بنجاح</div>
+  
   <script>
+    // إغلاق القائمة عند النقر خارجها
+    document.addEventListener("click", function(e) {
+      var sideMenu = document.getElementById("side-menu");
+      if (sideMenu.classList.contains("open") && !e.target.closest("#side-menu") && !e.target.closest(".menu-icon")) {
+        sideMenu.classList.remove("open");
+      }
+    });
     function profileClicked() {
       var user = localStorage.getItem("loggedUser");
-      if (user)
+      if (user) {
         window.location.href = "account.html";
-      else
+      } else {
         window.location.href = "login.html";
+      }
     }
     function toggleSideMenu() {
       var sideMenu = document.getElementById("side-menu");
       sideMenu.classList.toggle("open");
     }
-    function searchProducts(query) {
-      var filtered = homepageProducts.filter(function(product) {
-        return product.name.toLowerCase().includes(query.toLowerCase());
-      });
-      displayProducts(filtered);
-    }
     
-    var products = JSON.parse(localStorage.getItem("products")) || [];
+    // مصفوفة المنتجات مع خاصية pages والصور الإضافية لكل منتج
+    var products = [
+      { 
+        name: " سماعه ذكيه", 
+        price: 35, 
+        priceBefore: 45, 
+        discount: "10%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Sff543c6811ef41c482fb31492a7882b9S.png_220x220.png_.avif", 
+        description: "LAXASFIT H9 Smartwatch", 
+        extraImages: [
+          "https://via.placeholder.com/800x400/abc123/ffffff?text=صورة+إضافية+1",
+          "https://via.placeholder.com/800x400/def456/ffffff?text=صورة+إضافية+2"
+        ],
+        pages: ["homepage", "electronics"]
+      },
+      { 
+        name: "يد تحكم للبليستيشن", 
+        price: 55, 
+        priceBefore: 65, 
+        discount: "15%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S63b33cfa28ce4d62bbe6c68c532c1204O.jpg_220x220q75.jpg_.avif", 
+        description: "يد تحكم متطور", 
+        extraImages: [ "https://via.placeholder.com/800x400/123456/ffffff?text=صورة+إضافية" ],
+        pages: ["homepage", "electronics"]
+      },
+      { 
+        name: "وحدة تحكم العاب", 
+        price: 165, 
+        priceBefore: 185, 
+        discount: "12%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Sbce4990c459b46248dd1da84b86f6b0bH.jpg_220x220q75.jpg_.avif", 
+        description: "وحدة تحكم مع سماعات", 
+        extraImages: [],
+        pages: ["homepage", "electronics"]
+      },
+      { 
+        name: " نظارات للرجال والنساء", 
+        price: 35, 
+        priceBefore: 45, 
+        discount: "10%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Sb29f853ad2cb4a1283c307b8a74404b3d.jpg_220x220q75.jpg_.avif", 
+        description: "نظارات شمسية", 
+        extraImages: [ "https://via.placeholder.com/800x400/654321/ffffff?text=صورة+إضافية" ],
+        pages: ["homepage", "accessories"]
+      },
+      { 
+        name: "كفر حماية", 
+        price: 29, 
+        priceBefore: 35, 
+        discount: "15%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Sf5d8e207f3be4f8cab1ae057d63be742C.jpg_220x220q75.jpg_.avif", 
+        description: "كفر حماية لهاتفك", 
+        extraImages: [],
+        pages: ["homepage", "accessories"]
+      },
+      {
+        name: "طاولة قهوه",
+        description: "في الهواء الطلق طاولة قابلة للطي التخييم القهوة طوي نزهة الكربون الصلب المحمولة الشواء",
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S8bae663daa8e41ca96bd973ecdcdd645l.jpg_220x220q75.jpg_.avif",
+        extraImages: ["https://ae-pic-a1.aliexpress-media.com/kf/Sd75b2912d92148f9bad5d47c61ba068fw.jpg_220x220q75.jpg_.avif"],
+        price: 35,
+        priceBefore: 40,
+        discount: "10%",
+        pages: ["homepage", "furniture"]
+      },
+      { 
+        name: "كفر حماية", 
+        price: 29, 
+        priceBefore: 35, 
+        discount: "15%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Sf5d8e207f3be4f8cab1ae057d63be742C.jpg_220x220q75.jpg_.avif", 
+        description: "كفر حماية لهاتفك", 
+        extraImages: [],
+        pages: ["homepage", "accessories"]
+      },
+      {
+        name: "سماعات رأس لاسلكية أصلية",
+        description: "سماعات رأس لاسلكية أصلية Pro 4 TWS متوافقة مع البلوتوث 5.3 مقاومة للماء مع ميكروفون لسماعات الأذن Xiaomi iPhone",
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S2e99f6d53d7248dca4e2ae57f48969f7Q.jpg_220x220q75.jpg_.avif",
+        extraImages: [],
+        price: 24,
+        priceBefore: 20,
+        discount: "15%",
+        pages: ["homepage", "electronics"]
+      },
+      { 
+        name: "ملابس رجاليه كوريه", 
+        price: 60, 
+        priceBefore: 75, 
+        discount: "20%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S0004c4980e0c4056bc74246f7eef95523.jpg_220x220q75.jpg_.avif", 
+        description: "ملابس خارجية كورية", 
+        extraImages: [],
+        pages: ["homepage"]
+      },
+      { 
+        name: "ملابس رجاليه وريه عصريه", 
+        price: 60, 
+        priceBefore: 75, 
+        discount: "20%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/Se5d1e41430664b258ab198a14bd2dfd8k.jpg_220x220q75.jpg_.avif", 
+        description: "ملابس خارجية كورية", 
+        extraImages: [],
+        pages: ["homepage"]
+      },
+      { 
+        name: "دراجة اطفال", 
+        price: 292, 
+        priceBefore: 320, 
+        discount: "9%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S2f7fe53db00c4a6f9092c3c45ff6f667c.png_220x220.png_.avif", 
+        description: "دراجة أطفال", 
+        extraImages: [],
+        pages: ["homepage", "accessories"]
+      },
+      { 
+        name: "طائره درون", 
+        price: 130, 
+        priceBefore: 150, 
+        discount: "40%", 
+        img: "https://ae-pic-a1.aliexpress-media.com/kf/S552185614a4f4a3d92d7bf33d5f5ebb7a.jpg_220x220q75.jpg_.avif", 
+        description: "طائرة درون احترافية", 
+        extraImages: [ "https://via.placeholder.com/800x400/ff0000/ffffff?text=صورة+إضافية" ],
+        pages: ["homepage", "electronics"]
+      },
+      { 
+        name: "رف تخزين", 
+        price: 35, 
+        priceBefore: 52, 
+        discount: "58%", 
+        img: "https://i.ibb.co/k6xpN2Cd/Whats-App-Image-2025-03-22-at-1-34-45-PM.jpg", 
+        description: "رف تخزين بمستويين", 
+        extraImages: [],
+        pages: ["homepage", "furniture"]
+      }
+    ];
+    
+    // تخزين المصفوفة في localStorage ليتم استخدامها في الصفحات الأخرى
+    localStorage.setItem("products", JSON.stringify(products));
+    
+    // عرض المنتجات الخاصة بالصفحة الرئيسية (تلك التي تحتوي على "homepage")
+    var homepageProducts = products.filter(function(product) {
+      return product.pages && product.pages.includes("homepage");
+    });
+    
     function displayProducts(productList) {
       var container = document.getElementById("products-container");
       container.innerHTML = "";
@@ -285,11 +467,14 @@
       });
     }
     
-    function goToProductDetails(index) {
-      localStorage.setItem("selectedProductIndex", index);
-      window.location.href = "product-details.html";
+    function searchProducts(query) {
+      var filtered = homepageProducts.filter(function(product) {
+        return product.name.toLowerCase().includes(query.toLowerCase());
+      });
+      displayProducts(filtered);
     }
-    displayProducts(products);
+    
+    displayProducts(homepageProducts);
     
     // عرض السلايدر
     var slides = [
@@ -311,8 +496,28 @@
     var cart = JSON.parse(localStorage.getItem("cart")) || [];
     function updateCartCount() {
       document.getElementById("cart-count").innerText = cart.length;
+      updateCartTotalInNavbar();
+    }
+    function updateCartTotalInNavbar() {
+      var total = cart.reduce(function(sum, item) { return sum + item.price; }, 0);
+      document.getElementById("cart-total").innerText = "المجموع: " + total + " ريال";
+    }
+    function addToCart(name, price, img) {
+      cart.push({ name: name, price: price, img: img });
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount();
+      showCartNotification();
+    }
+    function showCartNotification() {
+      var notif = document.getElementById("cart-notification");
+      notif.style.display = "block";
+      setTimeout(function() { notif.style.display = "none"; }, 1500);
     }
     updateCartCount();
+    function goToProductDetails(index) {
+      localStorage.setItem("selectedProductIndex", index);
+      window.location.href = "product-details.html";
+    }
   </script>
 </body>
 </html>
