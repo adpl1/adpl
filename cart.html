@@ -224,14 +224,14 @@
         date: new Date().toISOString()
       };
       
-      // إرسال الطلب إلى الخادم
-      fetch("https://9ae4ee8e-33d9-4f19-83e9-c16d423e97de-00-3sxvo4hadnkgb.pike.replit.dev/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(order)
-      })
+     fetch("https://chilly-socks-juggle.loca.lt", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(order)
+})
+
       .then(response => response.json())
       .then(data => {
         console.log("تم حفظ الطلب:", data);
