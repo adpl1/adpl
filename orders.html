@@ -17,6 +17,7 @@
     .order-products .product { display: flex; align-items: center; margin-bottom: 10px; }
     .order-products .product img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; margin-left: 10px; }
     .order-total { font-size: 24px; font-weight: bold; text-align: center; margin-top: 10px; color: #007bff; }
+    .discount-status { font-size: 16px; color: #555; text-align: center; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -26,7 +27,7 @@
       <input type="text" id="search-input" placeholder="ابحث عن رقم الطلب..." onkeyup="filterOrders()">
     </div>
     <div id="orders-container">
-      <!-- الطلبات ستعرض هنا -->
+      <!-- عرض الطلبات -->
     </div>
   </div>
   
@@ -110,7 +111,9 @@
           <div class="order-total">
             المجموع: ${total.toFixed(2)} ريال
           </div>
-          ${order.message ? `<div class="order-message"><strong>الرسالة:</strong><br>${order.message}</div>` : "" }
+          <div class="discount-status">
+            ${order.discountUsed ? "تم استخدام كود الخصم" : "لم يتم استخدام كود الخصم"}
+          </div>
         `;
         container.appendChild(orderDiv);
       });
