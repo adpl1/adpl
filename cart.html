@@ -8,7 +8,11 @@
     /* تنسيقات الصفحة */
     body { font-family: Arial, sans-serif; margin: 0; direction: rtl; background: #f5f5f5; }
     .container { max-width: 800px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    /* ... التنسيقات الأخرى */
+    h2 { text-align: center; color: #333; }
+    .message-box { margin: 20px 0; }
+    textarea { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ddd; border-radius: 5px; resize: none; }
+    .btn { background-color: #4CAF50; color: white; border: none; padding: 10px 20px; font-size: 18px; cursor: pointer; border-radius: 5px; }
+    .btn:hover { background-color: #45a049; }
   </style>
 </head>
 <body>
@@ -19,12 +23,19 @@
       <p id="total-amount"></p>
       <p>رسوم التوصيل: مجانا</p>
     </div>
-    <button class="btn" onclick="initiateOrder()">اكمال الطلب</button>
+    
+    <!-- مربع الرسالة -->
+    <div class="message-box">
+      <label for="message">أرسل رسالة مع الطلب</label>
+      <textarea id="message" rows="4" placeholder="اكتب رسالتك هنا..."></textarea>
+    </div>
+
+    <button class="btn" onclick="sendOrder()">إرسال الطلب</button>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-database.js"></script>
-  
+
   <script>
     // تهيئة Firebase
     const firebaseConfig = {
@@ -58,7 +69,7 @@
             <img src="${item.img}" alt="${item.name}">
             <div class="info">
               <h3>${item.name}</h3>
-              <p class="price">السعر: ${item.price}</p>
+              <p class="price">السعر: ${item.price} ريال</p>
             </div>
           </div>
         `;
@@ -67,13 +78,21 @@
       document.getElementById("total-amount").innerText = "المجموع: " + total + " ريال";
     }
 
-    function initiateOrder() {
+    function sendOrder() {
       const orderNumber = "ORD" + Math.floor(Math.random() * 1000000);
+      const orderMessage = document.getElementById("message").value.trim();
+
+      if (orderMessage === "") {
+        alert("من فضلك، اكتب رسالة.");
+        return;
+      }
+
       const order = {
         orderNumber: orderNumber,
         items: cart,
         total: cart.reduce((sum, item) => sum + item.price, 0),
-        date: new Date().toISOString()
+        date: new Date().toISOString(),
+        message: orderMessage // إضافة الرسالة
       };
 
       // إرسال الطلب إلى Firebase
