@@ -26,6 +26,7 @@
       justify-content: flex-start;
       background: #fff;
       height: 10vh;
+      min-height: 60px;
       padding: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       border-bottom: 1px solid #ccc;
@@ -75,11 +76,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    #cart-total {
-      font-size: 10px;
-      color: #333;
-      margin-right: 10px;
     }
     /* القائمة الجانبية */
     #side-menu {
@@ -170,7 +166,6 @@
       .navbar .search-input { width: 100px; font-size: 9px; }
       .navbar .flag { width: 18px; }
       .navbar .profile-icon, .navbar .cart-icon { font-size: 14px; }
-      #cart-total { font-size: 9px; }
     }
     .product {
       background: #fff;
@@ -190,7 +185,6 @@
       object-fit: cover;
       margin-bottom: 10px;
     }
-    /* تعديل عرض السعر والخصم */
     .product p {
       margin: 5px 0;
     }
@@ -218,7 +212,7 @@
         <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle;">
         <span class="cart-count" id="cart-count">0</span>
       </span>
-      <span id="cart-total">المجموع: 0 ريال</span>
+      <!-- تم حذف عنصر عرض المجموع هنا -->
     </div>
     <!-- المحتوى الرئيسي -->
     <div id="products-container" class="products"></div>
@@ -232,8 +226,8 @@
       else
         window.location.href = "login.html";
     }
-    function toggleSideMenu() { /* تفاصيل القائمة الجانبية */ }
-    function searchProducts(query) { /* تفاصيل البحث */ }
+    function toggleSideMenu() { /* تفاصيل القائمة الجانبية كما هي */ }
+    function searchProducts(query) { /* تفاصيل البحث كما هي */ }
     
     var products = JSON.parse(localStorage.getItem("products")) || [];
     function displayProducts() {
@@ -249,6 +243,7 @@
               <span style="font-size:0.8em; text-decoration: line-through;">${product.priceBefore} ريال</span> 
               <span class="discount">${product.discount}</span>
             </p>
+            <button class="order-btn" onclick="event.stopPropagation(); addToCart('${product.name}', ${product.price}, '${product.img}')">🛒 أضف للسلة</button>
           </div>
         `;
       });
@@ -259,6 +254,29 @@
       window.location.href = "product-details.html";
     }
     displayProducts();
+    
+    // عرض السلايدر
+    var slides = [
+      'https://i.ibb.co/BVSXYysy/Whats-App-Image-2025-03-22-at-5-42-21-PM.jpg',
+      'https://i.ibb.co/C5wDM4Mv/Whats-App-Image-2025-03-22-at-5-42-20-PM.jpg',
+      'https://cdn.youcan.shop/stores/926ef875f015ee2050a3751649310090/others/GvZ0YESR78jSXwbSGRyv0wARqEexMPYlSgqOcQIQ.png'
+    ];
+    var currentSlide = 0;
+    function showSlide(index) {
+      var slider = document.getElementById("slider");
+      slider.style.backgroundImage = `url('${slides[index]}')`;
+    }
+    showSlide(currentSlide);
+    setInterval(function() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }, 4000);
+    
+    var cart = JSON.parse(localStorage.getItem("cart")) || [];
+    function updateCartCount() {
+      document.getElementById("cart-count").innerText = cart.length;
+    }
+    updateCartCount();
   </script>
 </body>
 </html>
