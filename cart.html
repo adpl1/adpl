@@ -58,7 +58,7 @@
     </div>
   </div>
   
-  <div id="cart-notification">✓ تم الاضافه للسله بنجاح</div>
+  <div id="cart-notification">✓ تم الاضافة للسلة بنجاح</div>
   
   <div id="overlay"></div>
   <div id="order-confirmation">
@@ -67,21 +67,23 @@
     <button class="btn secondary" onclick="closeConfirmation()">الغاء</button>
   </div>
   
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-database.js"></script>
   <script>
+    // تكوين Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyA3KjH-TX_ShjoUpdtDFgJwdNC5NwXDVVM",
       authDomain: "adpl-orders.firebaseapp.com",
       databaseURL: "https://adpl-orders-default-rtdb.firebaseio.com",
       projectId: "adpl-orders",
       storageBucket: "adpl-orders.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",  // استبدل برقم المرسل الخاص بك إن وجد
+      appId: "YOUR_APP_ID"  // استبدل بمعرف التطبيق الخاص بك إن وجد
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database(app);
+    const appFirebase = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database(appFirebase);
 
     // استرجاع السلة من localStorage
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -110,7 +112,7 @@
         const item = groupedCart[key];
         container.innerHTML += `
           <div class="cart-item" onclick="goToProductDetails('${item.name}')">
-            <img src="${item.img}" alt="${item.name}">
+            <img src="${item.img || 'https://via.placeholder.com/80'}" alt="${item.name}">
             <div class="info">
               <h3>${item.name}</h3>
               <p class="price">السعر: ${item.price} <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:16px; height:16px; vertical-align:middle;"></p>
@@ -128,15 +130,15 @@
     }
 
     function updateTotal() {
-      let total = cart.reduce((sum, item) => sum + item.price, 0);
+      let total = cart.reduce((sum, item) => sum + (item.price), 0);
       if (discountApplied) {
         let discountedTotal = (total * 0.9).toFixed(2);
         document.getElementById("discount-summary").innerHTML = 
-          "<p style='text-decoration: line-through;'>المجموع: " + total.toFixed(2) + " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:16px; height:16px; vertical-align:middle;'></p>" +
-          "<p style='font-weight: bold; color: #000;'>المجموع بعد الخصم: " + discountedTotal + " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:16px; height:16px; vertical-align:middle;'></p>";
+          "<p style='text-decoration: line-through;'>المجموع: " + total.toFixed(2) + " ريال</p>" +
+          "<p style='font-weight: bold; color: #000;'>المجموع بعد الخصم: " + discountedTotal + " ريال</p>";
         document.getElementById("total-amount").innerText = "";
       } else {
-        document.getElementById("total-amount").innerHTML = "المجموع: " + total + " <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s' alt='ريال' style='width:16px; height:16px; vertical-align:middle;'>";
+        document.getElementById("total-amount").innerHTML = "المجموع: " + total + " ريال";
         document.getElementById("discount-summary").innerHTML = "";
       }
     }
@@ -151,5 +153,129 @@
       }
     }
 
+    function updateCartTotalInNavbar() {
+      // في حالة وجود عنصر في شريط التنقل لعرض المجموع (اختياري)
+      const navbarTotal = document.getElementById("cart-total");
+      if (navbarTotal) {
+        let total = cart.reduce((sum, item) => sum + (item.price), 0);
+        navbarTotal.innerHTML = "المجموع: " + total + " ريال";
+      }
+    }
+
+    function goToProductDetails(productName) {
+      const product = cart.find(item => item.name === productName);
+      if (product) {
+        localStorage.setItem("selectedProduct", JSON.stringify(product));
+        window.location.href = "product-details.html";
+      }
+    }
+
+    function increaseQuantity(productName) {
+      const productIndex = cart.findIndex(item => item.name === productName);
+      if (productIndex !== -1) {
+        // زيادة الكمية بإضافة نسخة من العنصر
+        cart.push(cart[productIndex]);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        displayCart();
+      }
+    }
+
+    function decreaseQuantity(productName) {
+      const productIndex = cart.findIndex(item => item.name === productName);
+      if (productIndex !== -1) {
+        // تقليل الكمية عن طريق إزالة عنصر واحد
+        cart.splice(productIndex, 1);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        displayCart();
+      }
+    }
+
+    function removeFromCart(productName) {
+      cart = cart.filter(item => item.name !== productName);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      displayCart();
+    }
+
+    function generateOrderNumber() {
+      let orderNumber = "";
+      for (let i = 0; i < 10; i++) {
+        orderNumber += Math.floor(Math.random() * 10);
+      }
+      return orderNumber;
+    }
+
     function initiateOrder() {
-     
+      const loggedUser = localStorage.getItem("loggedUser");
+      if (!loggedUser) {
+        localStorage.setItem("redirectAfterLogin", window.location.href);
+        window.location.href = "login.html";
+      } else {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("order-confirmation").style.display = "block";
+      }
+    }
+
+    function closeConfirmation() {
+      document.getElementById("order-confirmation").style.display = "none";
+      document.getElementById("overlay").style.display = "none";
+    }
+
+    function confirmOrder() {
+      const orderNumber = generateOrderNumber();
+      const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+      
+      // تجميع المنتجات مع الكمية
+      const groupedProducts = {};
+      cart.forEach(item => {
+        if (groupedProducts[item.name]) {
+          groupedProducts[item.name].quantity++;
+        } else {
+          groupedProducts[item.name] = { ...item, quantity: 1 };
+        }
+      });
+      const productsArray = Object.values(groupedProducts);
+      
+      // احتساب المجموع (يمكنك تعديله إذا احتجت جمع السعر بناءً على الكمية أيضاً)
+      const total = cart.reduce((sum, item) => sum + (item.price), 0);
+      
+      const order = {
+        orderNumber: orderNumber,
+        products: productsArray,
+        user: loggedUser,
+        date: new Date().toISOString(),
+        total: total,
+        status: "جديد" // يمكنك تعديل الحالة إذا أردت
+      };
+      
+      // إرسال الطلب إلى Firebase
+      database.ref("orders/" + orderNumber).set(order)
+      .then(() => {
+        console.log("تم حفظ الطلب في Firebase:", order);
+        // رسالة واتساب بعد نجاح الحفظ
+        const message = `تم إرسال طلبك بنجاح. رقم الطلب: ${orderNumber}`;
+        const phone = "966500640335";
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        closeConfirmation();
+        window.open(url, '_blank');
+        // تفريغ السلة وإعادة التحديث\n        cart = [];\n        localStorage.removeItem("cart");\n        displayCart();\n      })\n      .catch(error => {\n        console.error(\"حدث خطأ أثناء حفظ الطلب:\", error);\n        alert(\"حدث خطأ أثناء إرسال الطلب. حاول مرة أخرى.\");\n      });\n    }\n\n    updateCartTotalInNavbar();\n    displayCart();\n  </script>\n</body>\n</html>\n```
+
+---
+
+### شرح سريع:
+1. **Firebase Setup**  
+   - يتم تهيئة Firebase باستخدام معلومات المشروع الخاصة بك (تأكد من استبدال messagingSenderId و appId إذا لزم الأمر).
+
+2. **عرض السلة**  
+   - تُسترجع عناصر السلة من localStorage وتُعرض مع إمكانية زيادة/تقليل الكمية وحذف عنصر.
+
+3. **تطبيق الخصم**  
+   - عند إدخال كود الخصم "AL334"، يتم خصم 10% من المجموع.
+
+4. **إتمام الطلب**  
+   - عند الضغط على "اكمال الطلب عبر الواتساب" يتم التحقق من تسجيل الدخول، ثم عرض نافذة تأكيد.
+   - عند التأكيد يتم تجميع الطلب، احتسابه، وإرساله إلى Firebase.
+   - بعد نجاح العملية يتم فتح رابط الواتساب مع رسالة تحتوي على رقم الطلب وتفريغ السلة.
+
+---
+
+انسخ الكود كاملاً في ملف HTML وجربه. إذا واجهت أي مشكلة إضافية أو كنت بحاجة إلى تعديل، أخبرني!
