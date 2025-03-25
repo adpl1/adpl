@@ -19,7 +19,7 @@
       background: transparent;
       min-height: 100vh;
     }
-    /* شريط التنقل - تم تقليل الارتفاع وحذف عرض المجموع */
+    /* شريط التنقل */
     .navbar {
       display: flex;
       align-items: center;
@@ -239,6 +239,7 @@
         <img src="https://png.pngtree.com/png-vector/20191026/ourmid/pngtree-shopping-basket-icon-png-image_1871519.jpg" alt="سلة" style="width:24px; vertical-align:middle;">
         <span class="cart-count" id="cart-count">0</span>
       </span>
+      <!-- تم حذف عنصر عرض المجموع -->
     </div>
     <!-- المحتوى الرئيسي -->
     <div id="products-container" class="products"></div>
@@ -252,14 +253,22 @@
       else
         window.location.href = "login.html";
     }
-    function toggleSideMenu() { /* تفاصيل القائمة الجانبية كما هي */ }
-    function searchProducts(query) { /* تفاصيل البحث كما هي */ }
+    function toggleSideMenu() {
+      var sideMenu = document.getElementById("side-menu");
+      sideMenu.classList.toggle("open");
+    }
+    function searchProducts(query) {
+      var filtered = homepageProducts.filter(function(product) {
+        return product.name.toLowerCase().includes(query.toLowerCase());
+      });
+      displayProducts(filtered);
+    }
     
     var products = JSON.parse(localStorage.getItem("products")) || [];
-    function displayProducts() {
+    function displayProducts(productList) {
       var container = document.getElementById("products-container");
       container.innerHTML = "";
-      products.forEach(function(product, index) {
+      productList.forEach(function(product, index) {
         container.innerHTML += `
           <div class="product" onclick="goToProductDetails(${index})">
             <img src="${product.img}" alt="${product.name}">
@@ -279,7 +288,7 @@
       localStorage.setItem("selectedProductIndex", index);
       window.location.href = "product-details.html";
     }
-    displayProducts();
+    displayProducts(products);
     
     // عرض السلايدر
     var slides = [
