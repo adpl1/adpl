@@ -30,9 +30,6 @@
     .btn:hover { background: #006400; }
     .btn.secondary { background: #007bff; }
     .btn.secondary:hover { background: #0056b3; }
-    /* مربع الرسالة */
-    .message-box { margin: 20px 0; }
-    textarea { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ddd; border-radius: 5px; resize: none; }
     /* نافذة التأكيد إن وُجدت */
     #order-confirmation { display: none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -30%); background: #fff; padding: 20px; border: 2px solid #007bff; border-radius: 10px; z-index: 1000; text-align: center; width: 90%; max-width: 400px; }
     #order-confirmation p { margin-bottom: 20px; font-size: 18px; }
@@ -55,10 +52,6 @@
       <button onclick="applyDiscount()">تم</button>
     </div>
     <div id="discount-summary"></div>
-    <div class="message-box">
-      <label for="message">أدخل رسالة مع الطلب:</label>
-      <textarea id="message" rows="4" placeholder="اكتب رسالتك هنا..."></textarea>
-    </div>
     <div class="btn-group">
       <button class="btn" onclick="sendOrder()">إرسال الطلب</button>
       <button class="btn secondary" onclick="window.location.href='index.html'">العودة للتسوق</button>
@@ -77,7 +70,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-database-compat.js"></script>
   <script>
-    // تهيئة Firebase باستخدام المعلومات الخاصة بمشروعك
+    // تهيئة Firebase باستخدام معلومات مشروعك
     const firebaseConfig = {
       apiKey: "AIzaSyA3KjH-TX_ShjoUpdtDFgJwdNC5NwXDVVM",
       authDomain: "adpl-orders.firebaseapp.com",
@@ -202,19 +195,12 @@
     // عند الضغط على "إرسال الطلب" يتم إرسال الطلب إلى Firebase ومن ثم فتح واتساب على الرقم 0500640335 مع ظهور رقم الطلب في الرسالة
     function sendOrder() {
       const orderNumber = "ORD" + Math.floor(Math.random() * 1000000);
-      const orderMessage = document.getElementById("message").value.trim();
-      
-      if (orderMessage === "") {
-        alert("من فضلك، اكتب رسالة مع الطلب.");
-        return;
-      }
       
       const order = {
         orderNumber: orderNumber,
         products: cart,
         total: cart.reduce((sum, item) => sum + item.price, 0),
         date: new Date().toISOString(),
-        message: orderMessage,
         user: JSON.parse(localStorage.getItem("loggedUser")) || {}
       };
       
@@ -224,7 +210,8 @@
         alert("تم إرسال طلبك بنجاح!");
         // فتح واتساب على الرقم 0500640335 مع ظهور رقم الطلب في الرسالة
         const message = "رقم الطلب: " + orderNumber;
-        const phone = "966500640335"; // استخدم الرقم الدولي المناسب، حيث 0500640335 مع رمز الدولة
+        // تأكد من استخدام رمز الدولة المناسب؛ هنا استخدمنا 966 كرمز دولة السعودية
+        const phone = "966500640335";
         const waUrl = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
         window.open(waUrl, "_blank");
       })
