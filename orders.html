@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>طلبات المتجر - صفحة صاحب المتجر</title>
+  <title>طلبات المتجر</title>
   <style>
     body { font-family: Arial, sans-serif; direction: rtl; background: #f5f5f5; margin: 0; padding: 20px; }
     .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -33,7 +33,7 @@
   <script>
     let orders = [];
     let filteredOrders = [];
-    
+
     function displayOrders() {
       const container = document.getElementById("orders-container");
       if (filteredOrders.length === 0) {
@@ -44,10 +44,9 @@
       
       filteredOrders.forEach(order => {
         let total = order.products.reduce((sum, product) => {
-          const qty = product.quantity || 1;
-          return sum + (product.price * qty);
+          return sum + (product.price * (product.quantity || 1));
         }, 0);
-        
+
         const orderDiv = document.createElement("div");
         orderDiv.className = "order";
         orderDiv.innerHTML = `
@@ -57,26 +56,19 @@
           </div>
           <div class="user-info">
             <strong>بيانات المستخدم:</strong><br>
-            ${order.user ? `
-              الاسم: ${order.user.name || 'غير متوفر'}<br>
-              البريد الإلكتروني: ${order.user.email || 'غير متوفر'}<br>
-              رقم الهاتف: ${order.user.phone || 'غير متوفر'}
-            ` : 'غير متوفر'}
+            الاسم: ${order.user?.name || 'غير متوفر'}<br>
+            الهاتف: ${order.user?.phone || 'غير متوفر'}
           </div>
           <div class="order-products">
             <strong>المنتجات:</strong>
-            ${order.products.map(product => {
-              const qty = product.quantity || 1;
-              return `
-                <div class="product">
-                  ${ product.img ? `<img src="${product.img}" alt="${product.name}">` : "" }
-                  <div>
-                    اسم المنتج: ${product.name}<br>
-                    السعر: ${product.price} - الكمية: ${qty}
-                  </div>
+            ${order.products.map(product => `
+              <div class="product">
+                <div>
+                  اسم المنتج: ${product.name}<br>
+                  السعر: ${product.price} ريال - الكمية: ${product.quantity || 1}
                 </div>
-              `;
-            }).join("")}
+              </div>
+            `).join("")}
           </div>
           <div class="order-total">
             المجموع: ${total.toFixed(2)} ريال
@@ -85,15 +77,15 @@
         container.appendChild(orderDiv);
       });
     }
-    
+
     function filterOrders() {
       const searchValue = document.getElementById("search-input").value.trim();
       filteredOrders = searchValue === "" ? orders : orders.filter(order => order.orderNumber.includes(searchValue));
       displayOrders();
     }
-    
-    // جلب الطلبات من الخادم عبر الرابط العام
-    fetch("https://jade-elementary-powerful-licence.trycloudflare.com/api/orders")
+
+    // جلب الطلبات من API
+    fetch("https://api.example.com/get-orders")
       .then(response => response.json())
       .then(data => {
         orders = data.orders;
