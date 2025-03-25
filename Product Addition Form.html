@@ -139,26 +139,12 @@
   </div>
 
   <script>
-    // دالة لتنسيق مصفوفة الصفحات
-    function formatPages(pages) {
-      let result = "[\n";
-      for (let i = 0; i < pages.length; i++) {
-        result += `          "${pages[i]}"`;
-        if (i !== pages.length - 1) result += ",\n";
-        else result += "\n";
-      }
-      result += "        ]";
-      return result;
-    }
-
     function loadProducts() {
       return JSON.parse(localStorage.getItem("products")) || [];
     }
-
     function saveProducts(products) {
       localStorage.setItem("products", JSON.stringify(products));
     }
-
     function createOrUpdateProduct() {
       const name = document.getElementById("product-name").value.trim();
       const description = document.getElementById("product-description").value.trim();
@@ -175,7 +161,7 @@
       if (img3) extraImages.push(img3);
       
       const product = {
-        id: Date.now(), // معرف فريد
+        id: Date.now(),
         name: name,
         description: description,
         img: img,
@@ -197,7 +183,6 @@
       displayProducts();
       document.getElementById("output").innerText = JSON.stringify(product, null, 2);
     }
-
     function displayProducts() {
       const products = loadProducts();
       const container = document.getElementById("product-list");
@@ -217,7 +202,6 @@
         container.appendChild(div);
       });
     }
-
     function editProduct(id) {
       const products = loadProducts();
       const product = products.find(p => p.id === id);
@@ -233,14 +217,12 @@
         document.getElementById("product-page").value = JSON.stringify(product.pages);
       }
     }
-
     function deleteProduct(id) {
       let products = loadProducts();
       products = products.filter(p => p.id !== id);
       saveProducts(products);
       displayProducts();
     }
-
     displayProducts();
   </script>
 </body>
