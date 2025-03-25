@@ -3,107 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>طلبات المتجر - صفحة صاحب المتجر</title>
+  <title>طلبات العملاء</title>
   <style>
-    body { font-family: Arial, sans-serif; direction: rtl; background: #f5f5f5; margin: 0; padding: 20px; }
-    .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .search-box { margin-bottom: 20px; text-align: center; }
-    .search-box input { width: 80%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
-    .order { border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px; padding: 15px; }
-    .order-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
-    .order-header h3 { margin: 0; }
-    .user-info, .order-info { margin-bottom: 10px; }
-    .order-products { border-top: 1px solid #ddd; padding-top: 10px; }
-    .order-products .product { display: flex; align-items: center; margin-bottom: 10px; }
-    .order-products .product img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; margin-left: 10px; }
-    .order-total { font-size: 24px; font-weight: bold; text-align: center; margin-top: 10px; color: #007bff; }
+    body { font-family: Arial, sans-serif; direction: rtl; background: #f5f5f5; }
+    .container { max-width: 800px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .order { border-bottom: 1px solid #ccc; padding: 10px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2 style="text-align:center;">طلبات المتجر</h2>
-    <div class="search-box">
-      <input type="text" id="search-input" placeholder="ابحث عن رقم الطلب..." onkeyup="filterOrders()">
-    </div>
-    <div id="orders-container">
-      <!-- الطلبات ستعرض هنا -->
-    </div>
+    <h2>جميع الطلبات</h2>
+    <div id="orders-container"></div>
   </div>
-  
+
   <script>
-    let orders = [];
-    let filteredOrders = [];
-    
-    function displayOrders() {
-      const container = document.getElementById("orders-container");
-      if (filteredOrders.length === 0) {
-        container.innerHTML = "<p style='text-align:center;'>لا توجد طلبات مطابقة.</p>";
-        return;
-      }
-      container.innerHTML = "";
-      
-      filteredOrders.forEach(order => {
-        let total = order.products.reduce((sum, product) => {
-          const qty = product.quantity || 1;
-          return sum + (product.price * qty);
-        }, 0);
-        
-        const orderDiv = document.createElement("div");
-        orderDiv.className = "order";
-        orderDiv.innerHTML = `
-          <div class="order-header">
-            <h3>رقم الطلب: ${order.orderNumber}</h3>
-            <span>${new Date(order.date).toLocaleString()}</span>
-          </div>
-          <div class="user-info">
-            <strong>بيانات المستخدم:</strong><br>
-            ${order.user ? `
-              الاسم: ${order.user.name || 'غير متوفر'}<br>
-              البريد الإلكتروني: ${order.user.email || 'غير متوفر'}<br>
-              رقم الهاتف: ${order.user.phone || 'غير متوفر'}
-            ` : 'غير متوفر'}
-          </div>
-          <div class="order-products">
-            <strong>المنتجات:</strong>
-            ${order.products.map(product => {
-              const qty = product.quantity || 1;
-              return `
-                <div class="product">
-                  ${ product.img ? `<img src="${product.img}" alt="${product.name}">` : "" }
-                  <div>
-                    اسم المنتج: ${product.name}<br>
-                    السعر: ${product.price} - الكمية: ${qty}
-                  </div>
-                </div>
-              `;
-            }).join("")}
-          </div>
-          <div class="order-total">
-            المجموع: ${total.toFixed(2)} ريال
-          </div>
-        `;
-        container.appendChild(orderDiv);
-      });
+    function fetchOrders() {
+      fetch("https://adpl-orders-default-rtdb.firebaseio.com/")
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById("orders-container");
+          container.innerHTML = "";
+          if (!data) {
+            container.innerHTML = "<p>لا توجد طلبات حتى الآن</p>";
+            return;
+          }
+          
+          Object.keys(data).forEach(key => {
+            const order = data[key];
+            const productsList = order.products.map(p => `<li>${p.name} × ${p.quantity}</li>`).join("");
+            container.innerHTML += `
+              <div class="order">
+                <p><strong>رقم الطلب:</strong> ${order.orderNumber}</p>
+                <p><strong>المستخدم:</strong> ${order.user ? order.user.username : "غير معروف"}</p>
+                <p><strong>التاريخ:</strong> ${new Date(order.date).toLocaleString()}</p>
+                <p><strong>المنتجات:</strong></p>
+                <ul>${productsList}</ul>
+              </div>
+            `;
+          });
+        })
+        .catch(error => console.error("خطأ أثناء جلب الطلبات:", error));
     }
-    
-    function filterOrders() {
-      const searchValue = document.getElementById("search-input").value.trim();
-      filteredOrders = searchValue === "" ? orders : orders.filter(order => order.orderNumber.includes(searchValue));
-      displayOrders();
-    }
-    
-    // جلب الطلبات من الخادم عبر الرابط العام
-    fetch("https://adpl-orders-default-rtdb.firebaseio.com/")
-      .then(response => response.json())
-      .then(data => {
-        orders = data.orders;
-        filteredOrders = orders;
-        displayOrders();
-      })
-      .catch(error => {
-        console.error("خطأ في جلب الطلبات:", error);
-        document.getElementById("orders-container").innerHTML = "<p>حدث خطأ أثناء جلب الطلبات.</p>";
-      });
+
+    fetchOrders();
+    setInterval(fetchOrders, 5000); // تحديث الطلبات كل 5 ثوانٍ
   </script>
 </body>
 </html>
