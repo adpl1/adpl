@@ -92,8 +92,8 @@
       displayOrders();
     }
     
-    // جلب الطلبات من الخادم
-    fetch("https://chilly-socks-juggle.loca.lt")
+    // جلب الطلبات من الخادم عبر الرابط العام
+    fetch("https://chilly-socks-juggle.loca.lt/api/orders")
       .then(response => response.json())
       .then(data => {
         orders = data.orders;
