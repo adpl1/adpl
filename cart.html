@@ -73,9 +73,9 @@
     <button class="btn secondary" onclick="closeConfirmation()">الغاء</button>
   </div>
   
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-database.js"></script>
+  <!-- استخدام مكتبات Firebase بنسخة compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-database-compat.js"></script>
   <script>
     // تهيئة Firebase باستخدام المعلومات التي زودتني بها
     const firebaseConfig = {
@@ -88,11 +88,12 @@
       appId: "1:220470125753:web:01460a13e0ae6c5b40e768",
       measurementId: "G-V88GLDQQW4"
     };
-    const appFirebase = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database(appFirebase);
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
     // استرجاع السلة من localStorage
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let discountApplied = false;
 
     function displayCart() {
       const container = document.getElementById("cart-items");
@@ -198,16 +199,7 @@
       displayCart();
     }
     
-    // نستخدم دالة توليد رقم الطلب إذا أردنا استخدامها في حالة تأكيد الطلب من نافذة التأكيد
-    function generateOrderNumber() {
-      let orderNumber = "";
-      for (let i = 0; i < 10; i++) {
-        orderNumber += Math.floor(Math.random() * 10);
-      }
-      return orderNumber;
-    }
-    
-    // عند الضغط على "إرسال الطلب" يتم إرسال جميع بيانات الطلب مع الرسالة إلى Firebase
+    // عند الضغط على "إرسال الطلب" يتم إرسال البيانات إلى Firebase مع الرسالة
     function sendOrder() {
       const orderNumber = "ORD" + Math.floor(Math.random() * 1000000);
       const orderMessage = document.getElementById("message").value.trim();
@@ -223,15 +215,13 @@
         total: cart.reduce((sum, item) => sum + item.price, 0),
         date: new Date().toISOString(),
         message: orderMessage,
-        // يمكنك إضافة معلومات المستخدم إذا كانت موجودة في localStorage (مثل loggedUser)
         user: JSON.parse(localStorage.getItem("loggedUser")) || {}
       };
       
       // إرسال الطلب إلى Firebase
-      database.ref("orders/" + orderNumber).set(order)
+      firebase.database().ref("orders/" + orderNumber).set(order)
       .then(() => {
         alert("تم إرسال طلبك بنجاح!");
-        // بعد الإرسال، إعادة توجيه المستخدم إلى صفحة الطلبات مع تمرير orderNumber في الرابط
         window.location.href = "orders.html?orderId=" + orderNumber;
       })
       .catch(error => {
@@ -240,7 +230,6 @@
       });
     }
     
-    // استدعاء دالة عرض السلة
     updateCartTotalInNavbar();
     displayCart();
   </script>
