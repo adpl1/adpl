@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>السلة - متجر adpl</title>
   <style>
-    /* التنسيقات كما هي */
     body { font-family: Arial, sans-serif; margin: 0; direction: rtl; background: #f5f5f5; }
     .container { max-width: 800px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     .cart-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #ccc; cursor: pointer; }
@@ -34,7 +33,6 @@
     #order-confirmation { display: none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -30%); background: #fff; padding: 20px; border: 2px solid #007bff; border-radius: 10px; z-index: 1000; text-align: center; width: 90%; max-width: 400px; }
     #order-confirmation p { margin-bottom: 20px; font-size: 18px; }
     #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 900; }
-    #cart-notification { display: none; position: fixed; top: 10px; right: 10px; background: #4caf50; color: #fff; padding: 10px 15px; border-radius: 5px; z-index: 1100; }
   </style>
 </head>
 <body>
@@ -78,8 +76,8 @@
       databaseURL: "https://adpl-orders-default-rtdb.firebaseio.com",
       projectId: "adpl-orders",
       storageBucket: "adpl-orders.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",  // استبدل برقم المرسل الخاص بك إن وجد
-      appId: "YOUR_APP_ID"  // استبدل بمعرف التطبيق الخاص بك إن وجد
+      messagingSenderId: "44807361883", // هذا مثال، ضع معرّف المرسل الخاص بك
+      appId: "1:44807361883:web:cba7b7d7d6fd4ab5649b8d" // هذا مثال، ضع معرف التطبيق الخاص بك
     };
 
     const appFirebase = firebase.initializeApp(firebaseConfig);
@@ -153,57 +151,6 @@
       }
     }
 
-    function updateCartTotalInNavbar() {
-      // في حالة وجود عنصر في شريط التنقل لعرض المجموع (اختياري)
-      const navbarTotal = document.getElementById("cart-total");
-      if (navbarTotal) {
-        let total = cart.reduce((sum, item) => sum + (item.price), 0);
-        navbarTotal.innerHTML = "المجموع: " + total + " ريال";
-      }
-    }
-
-    function goToProductDetails(productName) {
-      const product = cart.find(item => item.name === productName);
-      if (product) {
-        localStorage.setItem("selectedProduct", JSON.stringify(product));
-        window.location.href = "product-details.html";
-      }
-    }
-
-    function increaseQuantity(productName) {
-      const productIndex = cart.findIndex(item => item.name === productName);
-      if (productIndex !== -1) {
-        // زيادة الكمية بإضافة نسخة من العنصر
-        cart.push(cart[productIndex]);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        displayCart();
-      }
-    }
-
-    function decreaseQuantity(productName) {
-      const productIndex = cart.findIndex(item => item.name === productName);
-      if (productIndex !== -1) {
-        // تقليل الكمية عن طريق إزالة عنصر واحد
-        cart.splice(productIndex, 1);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        displayCart();
-      }
-    }
-
-    function removeFromCart(productName) {
-      cart = cart.filter(item => item.name !== productName);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      displayCart();
-    }
-
-    function generateOrderNumber() {
-      let orderNumber = "";
-      for (let i = 0; i < 10; i++) {
-        orderNumber += Math.floor(Math.random() * 10);
-      }
-      return orderNumber;
-    }
-
     function initiateOrder() {
       const loggedUser = localStorage.getItem("loggedUser");
       if (!loggedUser) {
@@ -257,25 +204,19 @@
         const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
         closeConfirmation();
         window.open(url, '_blank');
-        // تفريغ السلة وإعادة التحديث\n        cart = [];\n        localStorage.removeItem("cart");\n        displayCart();\n      })\n      .catch(error => {\n        console.error(\"حدث خطأ أثناء حفظ الطلب:\", error);\n        alert(\"حدث خطأ أثناء إرسال الطلب. حاول مرة أخرى.\");\n      });\n    }\n\n    updateCartTotalInNavbar();\n    displayCart();\n  </script>\n</body>\n</html>\n```
+        cart = []; // تفريغ السلة بعد الإتمام
+        localStorage.removeItem("cart");
+        displayCart();
+      })
+      .catch(error => {
+        console.error("حدث خطأ أثناء حفظ الطلب:", error);
+        alert("حدث خطأ أثناء إرسال الطلب. حاول مرة أخرى.");
+      });
+    }
 
----
+    // استرجاع السلة وتحديثها
+    displayCart();
 
-### شرح سريع:
-1. **Firebase Setup**  
-   - يتم تهيئة Firebase باستخدام معلومات المشروع الخاصة بك (تأكد من استبدال messagingSenderId و appId إذا لزم الأمر).
-
-2. **عرض السلة**  
-   - تُسترجع عناصر السلة من localStorage وتُعرض مع إمكانية زيادة/تقليل الكمية وحذف عنصر.
-
-3. **تطبيق الخصم**  
-   - عند إدخال كود الخصم "AL334"، يتم خصم 10% من المجموع.
-
-4. **إتمام الطلب**  
-   - عند الضغط على "اكمال الطلب عبر الواتساب" يتم التحقق من تسجيل الدخول، ثم عرض نافذة تأكيد.
-   - عند التأكيد يتم تجميع الطلب، احتسابه، وإرساله إلى Firebase.
-   - بعد نجاح العملية يتم فتح رابط الواتساب مع رسالة تحتوي على رقم الطلب وتفريغ السلة.
-
----
-
-انسخ الكود كاملاً في ملف HTML وجربه. إذا واجهت أي مشكلة إضافية أو كنت بحاجة إلى تعديل، أخبرني!
+  </script>
+</body>
+</html>
