@@ -3,50 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>طلبات العملاء</title>
+  <title>الطلبات - متجر adpl</title>
   <style>
-    body { font-family: Arial, sans-serif; direction: rtl; background: #f5f5f5; }
+    /* التنسيقات */
+    body { font-family: Arial, sans-serif; margin: 0; direction: rtl; background: #f5f5f5; }
     .container { max-width: 800px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .order { border-bottom: 1px solid #ccc; padding: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table th, table td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+    th { background-color: #007bff; color: white; }
+    .status { font-weight: bold; color: green; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>جميع الطلبات</h2>
-    <div id="orders-container"></div>
+    <h2>الطلبات</h2>
+    <table id="orders-table">
+      <thead>
+        <tr>
+          <th>رقم الطلب</th>
+          <th>المنتجات</th>
+          <th>المجموع</th>
+          <th>تاريخ الطلب</th>
+          <th>حالة الطلب</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- سيتم عرض البيانات هنا -->
+      </tbody>
+    </table>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.4.0/firebase-database.js"></script>
   <script>
-    function fetchOrders() {
-      fetch("https://adpl-orders-default-rtdb.firebaseio.com/")
-        .then(response => response.json())
-        .then(data => {
-          const container = document.getElementById("orders-container");
-          container.innerHTML = "";
-          if (!data) {
-            container.innerHTML = "<p>لا توجد طلبات حتى الآن</p>";
-            return;
-          }
-          
-          Object.keys(data).forEach(key => {
-            const order = data[key];
-            const productsList = order.products.map(p => `<li>${p.name} × ${p.quantity}</li>`).join("");
-            container.innerHTML += `
-              <div class="order">
-                <p><strong>رقم الطلب:</strong> ${order.orderNumber}</p>
-                <p><strong>المستخدم:</strong> ${order.user ? order.user.username : "غير معروف"}</p>
-                <p><strong>التاريخ:</strong> ${new Date(order.date).toLocaleString()}</p>
-                <p><strong>المنتجات:</strong></p>
-                <ul>${productsList}</ul>
-              </div>
-            `;
-          });
-        })
-        .catch(error => console.error("خطأ أثناء جلب الطلبات:", error));
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3KjH-TX_ShjoUpdtDFgJwdNC5NwXDVVM",
+      authDomain: "adpl-orders.firebaseapp.com",
+      databaseURL: "https://adpl-orders-default-rtdb.firebaseio.com",
+      projectId: "adpl-orders",
+      storageBucket: "adpl-orders.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database(app);
+
+    // دالة لاسترجاع الطلبات من Firebase
+    function getOrders() {
+      const ordersRef = database.ref('orders');
+      ordersRef.on('value', (snapshot) => {
+        const orders = snapshot.val();
+        displayOrders(orders);
+      });
     }
 
-    fetchOrders();
-    setInterval(fetchOrders, 5000); // تحديث الطلبات كل 5 ثوانٍ
+    // دالة لعرض الطلبات في الجدول
+    function displayOrders(orders) {
+      const tableBody = document.getElementById('orders-table').getElementsByTagName('tbody')[0];
+      tableBody.innerHTML = ''; // تنظيف الجدول
+
+      if (orders) {
+        for (const orderId in orders) {
+          const order = orders[orderId];
+          const row = tableBody.insertRow();
+          row.innerHTML = `
+            <td>${orderId}</td>
+            <td>${order.items.map(item => item.name).join(', ')}</td>
+            <td>${order.total} <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx34eO8RbZlsetN1iAQtxuOLnLOlyJbJmU7Q&s" alt="ريال" style="width:16px; height:16px; vertical-align:middle;"></td>
+            <td>${order.date}</td>
+            <td><span class="status">${order.status}</span></td>
+          `;
+        }
+      } else {
+        const row = tableBody.insertRow();
+        row.innerHTML = '<td colspan="5">لا توجد طلبات حالياً</td>';
+      }
+    }
+
+    // تنفيذ الدالة عند تحميل الصفحة
+    window.onload = function() {
+      getOrders();
+    };
   </script>
 </body>
 </html>
