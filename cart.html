@@ -224,14 +224,14 @@
         date: new Date().toISOString()
       };
       
-     fetch("https://chilly-socks-juggle.loca.lt", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(order)
-})
-
+      // إرسال الطلب إلى الخادم عبر الرابط العام
+      fetch("https://chilly-socks-juggle.loca.lt/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(order)
+      })
       .then(response => response.json())
       .then(data => {
         console.log("تم حفظ الطلب:", data);
