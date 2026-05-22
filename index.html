@@ -536,6 +536,238 @@ body{background:white;color:var(--dark);font-size:15px}
   height: 36px;
   font-size: 15px;
 }
+/* =========================================
+   لون خلفية الصفحة بالكامل
+   غيّر هذا المتغير من هنا فقط إذا أردت
+   ========================================= */
+   :root{
+    --page-bg:#ffffff;
+  }
+  
+  body{
+    background:var(--page-bg);
+  }
+  
+  .app,
+  .screen,
+  #homeScreen,
+  #storeScreen,
+  #cartScreen,
+  #checkoutScreen,
+  #customScreen,
+  #ordersScreen,
+  #orderDetailScreen,
+  #chatScreen,
+  #profileScreen,
+  #productDetailScreen,
+  #favoritesScreen{
+    background:var(--page-bg);
+  }
+  
+  /* =========================================
+     تصغير الهيدر + صورة الملف الشخصي
+     ========================================= */
+  .new-home-header{
+    padding:5px 16px 2px;
+  }
+  
+  .nh-avatar{
+    width:36px;
+    height:36px;
+    font-size:14px;
+  }
+  
+  .nh-greet .small{
+    font-size:9px;
+  }
+  
+  .nh-greet .big{
+    font-size:13px;
+  }
+  
+  .nh-bell{
+    width:34px;
+    height:34px;
+    font-size:14px;
+  }
+  
+  /* =========================================
+     تصغير شريط البحث بنسبة تقريبية 25%
+     ========================================= */
+  .nh-search-wrap{
+    padding:4px 16px 10px;
+  }
+  
+  .nh-search{
+    padding:9px 12px;
+    border-radius:14px;
+  }
+  
+  .nh-search input{
+    font-size:12px;
+  }
+  
+  .ic-mic{
+    width:22px;
+    height:22px;
+    font-size:14px;
+  }
+  
+  /* =========================================
+     مربعات الخدمات: مربع + أصغر + الرسم أسفل اليسار
+     العنوان أعلى اليمين + الوصف تحته + السهم صغير
+     ========================================= */
+  .qs-row{
+    gap:8px;
+    padding:0 16px;
+    margin-bottom:10px;
+  }
+  
+  .qs-card{
+    width:130px;
+    height:70px;
+    min-height:0;
+    padding:10px;
+    position:relative;
+    border-radius:16px;
+    overflow:hidden;
+    text-align:right;
+  }
+  
+  .qs-card h5{
+    font-size:11px;
+    margin-bottom:2px;
+    text-align:right;
+    padding-left:28px;
+  }
+  
+  .qs-card p{
+    font-size:8.5px;
+    line-height:1.2;
+    margin-bottom:16px;
+    text-align:right;
+    padding-left:28px;
+  }
+  
+  .qs-card .qs-img{
+    position:absolute;
+    left:10px;
+    bottom:10px;
+    transform:none;
+    font-size:24px;
+  }
+  
+  .qs-card .qs-btn{
+    position:absolute;
+    right:10px;
+    bottom:10px;
+    width:20px;
+    height:20px;
+    font-size:8px;
+  }
+  
+  /* =========================================
+     رفع السلايدر للأعلى بعد تصغير المربعات
+     ========================================= */
+  .promo-banner{
+    min-height:84px !important;
+    height:90px !important;
+    padding:8px 14px !important;
+    margin:0 16px 8px !important;
+    border-radius:18px;
+  }
+  
+  .promo-banner .promo-text h3{
+    font-size:13px;
+    margin-bottom:2px;
+  }
+  
+  .promo-banner .promo-text .sub{
+    font-size:9px;
+    margin-bottom:5px;
+  }
+  
+  .promo-flash{
+    font-size:8px;
+    padding:2px 7px;
+    margin-bottom:4px;
+  }
+  
+  .promo-cta{
+    padding:5px 8px 5px 10px;
+    font-size:10px;
+  }
+  
+  .promo-cta .arrow{
+    width:18px;
+    height:18px;
+    font-size:8px;
+  }
+  
+  .promo-img{
+    font-size:40px !important;
+    margin-right:6px;
+  }
+  
+  .promo-dots{
+    margin-bottom:12px;
+  }
+  
+  /* =========================================
+     تصغير عروض البطاقتين بنسبة تقريبية 25%
+     ========================================= */
+  .offer-card{
+    padding:8px;
+  }
+  
+  .offer-card .ocimg{
+    height:68px;
+    font-size:30px;
+  }
+  
+  .offer-card .otag{
+    font-size:9px;
+  }
+  
+  
+  .offer-card .otitle{
+    font-size:10px;
+    min-height:28px;
+  }
+  
+  .offer-card .obtn{
+    padding:6px 8px;
+    font-size:9px;
+  }
+  
+  /* =========================================
+     تصغير أزرار التنقل السفلي بنسبة تقريبية 20%
+     ========================================= */
+  .bottom-nav{
+    padding:6px 0;
+  }
+  
+  .nav-item{
+    padding:6px 4px;
+    font-size:9px;
+    gap:2px;
+  }
+  
+  .nav-item i{
+    font-size:15px;
+  }
+  
+  .nav-badge{
+    right:12px;
+    top:3px;
+  }
+  
+  /* =========================================
+     تقليل تباعد عام بسيط حتى يرتفع المحتوى
+     ========================================= */
+  .section{
+    margin-bottom:12px;
+  }
 </style>
 </head>
 <body>
